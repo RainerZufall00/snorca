@@ -9,7 +9,7 @@ Slicing runs fully on-device with the [Kiri:Moto](https://github.com/GridSpace/g
 
 **Status:** early development. Engine, core logic and the app build are checked in CI (including
 slicing inside WebKit on the iOS simulator); not yet tested against a real printer. See [docs/DESIGN.md](docs/DESIGN.md) (German) for the plan and
-[ios/README.md](ios/README.md) for building the app.
+[ios/README.md](ios/README.md) for building the app. German user guide: [docs/ANLEITUNG.md](docs/ANLEITUNG.md).
 
 ## Engine
 
