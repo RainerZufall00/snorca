@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  ios:
+    name: iOS app + SnarwalCore (Xcode)
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Xcode version
+        run: xcodebuild -version
+      - name: SnarwalCore tests
+        run: swift test --package-path Packages/SnarwalCore
+      - name: Build app for the simulator (unsigned)
+        run: |
+          xcodebuild \
+            -project ios/Snarwal.xcodeproj \
+            -scheme Snarwal \
+            -destination 'generic/platform=iOS Simulator' \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO \
+            -quiet \
+            build
+
+  engine:
+    name: Slicing engine (Kiri:Moto in Chromium)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install
+        working-directory: engine
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: Build and test
+        working-directory: engine
+        run: |
+          npm run build
+          npm test
