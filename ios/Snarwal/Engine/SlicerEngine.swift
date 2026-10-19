@@ -94,8 +94,8 @@ final class SlicerEngine {
     private func call(_ body: String, arguments: [String: Any]) async throws -> Any? {
         try await waitUntilReady()
         do {
-            let result: Any? = try await webView.callAsyncJavaScript(body, arguments: arguments, in: nil, in: .page)
-            return result
+            // the async overload is labelled contentWorld:, the completion-handler one in:
+            return try await webView.callAsyncJavaScript(body, arguments: arguments, contentWorld: .page)
         } catch {
             // JS exceptions arrive as WKError with the message in userInfo
             let message = (error as NSError).userInfo["WKJavaScriptExceptionMessage"] as? String

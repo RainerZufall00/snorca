@@ -15,12 +15,28 @@
 		5A0000000000000000000201 /* Snarwal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Snarwal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A0000000000000000000202 /* EngineBundle */ = {isa = PBXFileReference; lastKnownFileType = folder; path = EngineBundle; sourceTree = "<group>"; };
 		5A0000000000000000000203 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5A0000000000000000000204 /* SnarwalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SnarwalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXContainerItemProxy section */
+		5A0000000000000000000C01 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5A0000000000000000000901 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5A0000000000000000000701;
+			remoteInfo = Snarwal;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		5A0000000000000000000301 /* Snarwal */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Snarwal;
+			sourceTree = "<group>";
+		};
+		5A0000000000000000000302 /* SnarwalTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SnarwalTests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -34,6 +50,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5A0000000000000000000402 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -41,6 +64,7 @@
 			isa = PBXGroup;
 			children = (
 				5A0000000000000000000301 /* Snarwal */,
+				5A0000000000000000000302 /* SnarwalTests */,
 				5A0000000000000000000202 /* EngineBundle */,
 				5A0000000000000000000203 /* Info.plist */,
 				5A0000000000000000000502 /* Products */,
@@ -51,6 +75,7 @@
 			isa = PBXGroup;
 			children = (
 				5A0000000000000000000201 /* Snarwal.app */,
+				5A0000000000000000000204 /* SnarwalTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -81,6 +106,29 @@
 			productReference = 5A0000000000000000000201 /* Snarwal.app */;
 			productType = "com.apple.product-type.application";
 		};
+		5A0000000000000000000702 /* SnarwalTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5A0000000000000000000A03 /* Build configuration list for PBXNativeTarget "SnarwalTests" */;
+			buildPhases = (
+				5A0000000000000000000803 /* Sources */,
+				5A0000000000000000000402 /* Frameworks */,
+				5A0000000000000000000804 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				5A0000000000000000000D01 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				5A0000000000000000000302 /* SnarwalTests */,
+			);
+			name = SnarwalTests;
+			packageProductDependencies = (
+			);
+			productName = SnarwalTests;
+			productReference = 5A0000000000000000000204 /* SnarwalTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -93,6 +141,10 @@
 				TargetAttributes = {
 					5A0000000000000000000701 = {
 						CreatedOnToolsVersion = 16.0;
+					};
+					5A0000000000000000000702 = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = 5A0000000000000000000701;
 					};
 				};
 			};
@@ -115,6 +167,7 @@
 			projectRoot = "";
 			targets = (
 				5A0000000000000000000701 /* Snarwal */,
+				5A0000000000000000000702 /* SnarwalTests */,
 			);
 		};
 /* End PBXProject section */
@@ -128,6 +181,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5A0000000000000000000804 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -138,7 +198,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5A0000000000000000000803 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		5A0000000000000000000D01 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5A0000000000000000000701 /* Snarwal */;
+			targetProxy = 5A0000000000000000000C01 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		5A0000000000000000000B01 /* Debug */ = {
@@ -268,6 +343,42 @@
 			};
 			name = Release;
 		};
+		5A0000000000000000000B05 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.rainerzufall00.snarwal.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Snarwal.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Snarwal";
+			};
+			name = Debug;
+		};
+		5A0000000000000000000B06 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.rainerzufall00.snarwal.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Snarwal.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Snarwal";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -285,6 +396,15 @@
 			buildConfigurations = (
 				5A0000000000000000000B03 /* Debug */,
 				5A0000000000000000000B04 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5A0000000000000000000A03 /* Build configuration list for PBXNativeTarget "SnarwalTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5A0000000000000000000B05 /* Debug */,
+				5A0000000000000000000B06 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

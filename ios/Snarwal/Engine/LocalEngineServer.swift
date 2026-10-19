@@ -25,16 +25,13 @@ final class LocalEngineServer: @unchecked Sendable {
             self?.serve(connection)
         }
         return try await withCheckedThrowingContinuation { continuation in
-            var resumed = false
+            let once = ResumeOnce()
             listener.stateUpdateHandler = { state in
-                guard !resumed else { return }
                 switch state {
                 case .ready:
-                    resumed = true
-                    continuation.resume(returning: listener.port?.rawValue ?? 0)
+                    if once.claim() { continuation.resume(returning: listener.port?.rawValue ?? 0) }
                 case .failed(let error):
-                    resumed = true
-                    continuation.resume(throwing: error)
+                    if once.claim() { continuation.resume(throwing: error) }
                 default:
                     break
                 }
@@ -101,5 +98,19 @@ final class LocalEngineServer: @unchecked Sendable {
         connection.send(content: Data(header.utf8) + body, completion: .contentProcessed { _ in
             connection.cancel()
         })
+    }
+}
+
+/// Lets exactly one caller resume a continuation.
+private final class ResumeOnce: @unchecked Sendable {
+    private let lock = NSLock()
+    private var done = false
+
+    func claim() -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        if done { return false }
+        done = true
+        return true
     }
 }

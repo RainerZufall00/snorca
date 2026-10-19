@@ -15,16 +15,19 @@ jobs:
         run: xcodebuild -version
       - name: SnarwalCore tests
         run: swift test --package-path Packages/SnarwalCore
-      - name: Build app for the simulator (unsigned)
+      - name: Build and test the app in the iOS simulator
         run: |
+          # first available iPhone simulator
+          UDID=$(xcrun simctl list devices available -j | python3 -c "import json,sys; d=json.load(sys.stdin)['devices']; print(next(x['udid'] for k in sorted(d, reverse=True) if 'iOS' in k for x in d[k] if 'iPhone' in x['name']))")
+          echo "Simulator: $UDID"
           xcodebuild \
             -project ios/Snarwal.xcodeproj \
             -scheme Snarwal \
-            -destination 'generic/platform=iOS Simulator' \
+            -destination "id=$UDID" \
             -configuration Debug \
             CODE_SIGNING_ALLOWED=NO \
             -quiet \
-            build
+            test
 
   engine:
     name: Slicing engine (Kiri:Moto in Chromium)
