@@ -29,8 +29,12 @@ struct PlateScreen: View {
                 }
             }
         }
-        .navigationTitle(model.projectName.isEmpty ? "Druckplatte" : model.projectName)
+        .navigationTitle(model.projectName.isEmpty ? String(localized: "Druckplatte") : model.projectName)
         .navigationBarTitleDisplayMode(.inline)
+        // the bar sits on the dark 3D viewport
+        .toolbarBackground(Color.snarwalViewport, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .toolbarColorScheme(.dark, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 ImportButton {
@@ -237,7 +241,7 @@ private struct SliceButton: View {
                     if case .slicing = model.sliceState {
                         HStack(spacing: 10) {
                             ProgressView().tint(.white)
-                            Text("Wird geslict … \(Int(model.engine.progress * 100)) %")
+                            Text("Wird geslict …") + Text(verbatim: " \(Int(model.engine.progress * 100)) %")
                         }
                     } else {
                         Text("Slicen")

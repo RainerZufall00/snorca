@@ -16,7 +16,7 @@ struct PlateSceneView: UIViewRepresentable {
     }
 
     func makeUIView(context: Context) -> SCNView {
-        let view = SCNView()
+        let view = FittingSCNView()
         view.scene = context.coordinator.scene
         view.backgroundColor = UIColor(Color.snarwalViewport)
         view.allowsCameraControl = true
@@ -42,6 +42,7 @@ struct PlateSceneView: UIViewRepresentable {
         let cameraNode = SCNNode()
         var onSelect: (UUID?) -> Void
         private var nodes: [UUID: SCNNode] = [:]
+        private let selectionNode = SCNNode()
         /// Geometry is built once per mesh; edits only change node transforms.
         private var geometryKeys: [UUID: Int] = [:]
 
@@ -60,14 +61,15 @@ struct PlateSceneView: UIViewRepresentable {
             let ambient = SCNNode()
             ambient.light = SCNLight()
             ambient.light?.type = .ambient
-            ambient.light?.intensity = 450
+            ambient.light?.intensity = 350
             scene.rootNode.addChildNode(ambient)
             let sun = SCNNode()
             sun.light = SCNLight()
             sun.light?.type = .directional
-            sun.light?.intensity = 900
+            sun.light?.intensity = 750
             sun.eulerAngles = SCNVector3(x: -Float.pi / 3, y: Float.pi / 6, z: 0)
             scene.rootNode.addChildNode(sun)
+            scene.rootNode.addChildNode(selectionNode)
         }
 
         private func buildBed() {
@@ -122,12 +124,30 @@ struct PlateSceneView: UIViewRepresentable {
                     m31: Float(m[2]), m32: Float(m[5]), m33: Float(m[8]), m34: 0,
                     m41: Float(t.x), m42: Float(t.y), m43: Float(t.z), m44: 1)
                 let head = heads.first { $0.tool == object.tool }
-                let material = node.geometry?.firstMaterial
-                material?.diffuse.contents = UIColor(head?.color ?? .gray)
-                material?.emission.contents = object.id == selectedID
-                    ? UIColor(red: 0.25, green: 0.55, blue: 0.65, alpha: 1)
-                    : UIColor.black
+                node.geometry?.firstMaterial?.diffuse.contents = UIColor(head?.color ?? .gray)
             }
+            updateSelection(objects.first { $0.id == selectedID })
+        }
+
+        /// Outline of the selected object's bounding box; tinting the object
+        /// itself would falsify its filament colour.
+        private func updateSelection(_ object: PlateObject?) {
+            selectionNode.geometry = nil
+            guard let object else { return }
+            let s = object.size
+            let x0 = Float(object.position.x - s.x / 2), x1 = Float(object.position.x + s.x / 2)
+            let y0 = Float(object.position.y - s.y / 2), y1 = Float(object.position.y + s.y / 2)
+            let z0: Float = 0.1, z1 = Float(s.z) + 0.1
+            let corners = [
+                SCNVector3(x0, y0, z0), SCNVector3(x1, y0, z0), SCNVector3(x1, y1, z0), SCNVector3(x0, y1, z0),
+                SCNVector3(x0, y0, z1), SCNVector3(x1, y0, z1), SCNVector3(x1, y1, z1), SCNVector3(x0, y1, z1),
+            ]
+            let edges: [Int32] = [0, 1, 1, 2, 2, 3, 3, 0, 4, 5, 5, 6, 6, 7, 7, 4, 0, 4, 1, 5, 2, 6, 3, 7]
+            let geometry = SCNGeometry(sources: [SCNGeometrySource(vertices: corners)],
+                                       elements: [SCNGeometryElement(indices: edges, primitiveType: .line)])
+            geometry.firstMaterial?.diffuse.contents = UIColor(red: 0.5, green: 0.83, blue: 0.92, alpha: 1)
+            geometry.firstMaterial?.lightingModel = .constant
+            selectionNode.geometry = geometry
         }
 
         /// Flat-shaded geometry from triangle soup.
@@ -167,5 +187,15 @@ struct PlateSceneView: UIViewRepresentable {
             let id = hits.lazy.compactMap { $0.node.name.flatMap(UUID.init(uuidString:)) }.first
             onSelect(id)
         }
+    }
+}
+
+/// Keeps the whole bed in view: the field of view applies to the narrower
+/// side, so portrait iPhones and iPads do not crop the plate.
+private final class FittingSCNView: SCNView {
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        guard bounds.width > 0, bounds.height > 0 else { return }
+        pointOfView?.camera?.projectionDirection = bounds.width < bounds.height ? .horizontal : .vertical
     }
 }

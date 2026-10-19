@@ -261,6 +261,16 @@
         }
       }
     },
+    "Druckplatte": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Build plate"
+          }
+        }
+      }
+    },
     "Druckt": {
       "localizations": {
         "en": {
@@ -997,6 +1007,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Keep printing"
+          }
+        }
+      }
+    },
+    "Wird geslict …": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slicing …"
           }
         }
       }

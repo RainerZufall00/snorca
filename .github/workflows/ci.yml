@@ -49,23 +49,23 @@ jobs:
             limit 240 xcrun simctl bootstatus "$1" -b || echo "bootstatus timed out"
             limit 120 xcrun simctl install "$1" "$APP"
           }
-          shoot() { # device name args...
-            local dev=$1 name=$2; shift 2
+          shoot() { # device name seconds args...
+            local dev=$1 name=$2 wait=$3; shift 3
             echo "== $name"
             limit 30 xcrun simctl terminate "$dev" $ID 2>/dev/null || true
             limit 60 xcrun simctl launch "$dev" $ID "$@" || echo "launch failed"
-            sleep 12
+            sleep "$wait"
             limit 60 xcrun simctl io "$dev" screenshot "screenshots/$name.png" || echo "screenshot failed"
           }
           prepare "$IPHONE"
-          shoot "$IPHONE" iphone-1-start
-          shoot "$IPHONE" iphone-2-plate -SnarwalDemo
-          shoot "$IPHONE" iphone-3-preview -SnarwalDemo -SnarwalAutoSlice
-          shoot "$IPHONE" iphone-4-printer -SnarwalPrinterTab
+          shoot "$IPHONE" iphone-1-start 25
+          shoot "$IPHONE" iphone-2-plate 12 -SnarwalDemo
+          shoot "$IPHONE" iphone-3-preview 60 -SnarwalDemo -SnarwalAutoSlice
+          shoot "$IPHONE" iphone-4-printer 12 -SnarwalPrinterTab
           limit 120 xcrun simctl shutdown "$IPHONE" || true
           prepare "$IPAD"
-          shoot "$IPAD" ipad-1-plate -SnarwalDemo
-          shoot "$IPAD" ipad-2-printer -SnarwalPrinterTab
+          shoot "$IPAD" ipad-1-plate 15 -SnarwalDemo
+          shoot "$IPAD" ipad-2-printer 12 -SnarwalPrinterTab
       - uses: actions/upload-artifact@v4
         if: always()
         with:
