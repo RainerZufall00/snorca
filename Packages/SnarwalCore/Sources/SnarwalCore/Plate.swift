@@ -80,11 +80,14 @@ public struct Plate: Sendable {
     public func boundsIssues() -> [PlateIssue] {
         var issues: [PlateIssue] = []
         for object in objects {
-            let b = object.placedMesh().bounds
-            if b.min.x < 0 || b.min.y < 0 || b.max.x > PrinterSpec.bedWidth || b.max.y > PrinterSpec.bedDepth {
+            let s = object.size
+            let minX = object.position.x - s.x / 2, maxX = object.position.x + s.x / 2
+            let minY = object.position.y - s.y / 2, maxY = object.position.y + s.y / 2
+            let eps = 1e-6
+            if minX < -eps || minY < -eps || maxX > PrinterSpec.bedWidth + eps || maxY > PrinterSpec.bedDepth + eps {
                 issues.append(.outsideBed(name: object.name))
             }
-            if b.max.z > PrinterSpec.maxHeight {
+            if s.z > PrinterSpec.maxHeight {
                 issues.append(.tooTall(name: object.name))
             }
         }

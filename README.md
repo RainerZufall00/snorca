@@ -5,8 +5,9 @@ send them to the printer and watch the print. Not affiliated with Snapmaker.
 
 Slicing runs fully on-device with the [Kiri:Moto](https://github.com/GridSpace/grid-apps) engine (MIT).
 
-**Status:** early prototype. The slicing engine bundle works; the iOS app is next.
-See [docs/DESIGN.md](docs/DESIGN.md) (German) for the plan.
+**Status:** early development. Engine and core logic are tested; the SwiftUI app is written but
+has not been compiled in Xcode yet. See [docs/DESIGN.md](docs/DESIGN.md) (German) for the plan and
+[ios/README.md](ios/README.md) for building the app.
 
 ## Engine
 
@@ -15,7 +16,15 @@ git submodule update --init
 cd engine
 npm install
 npm run build   # writes engine/dist
-npm test        # slices a 20 mm cube in headless Chromium
+npm test        # slicing tests in headless Chromium
+npm run bundle:ios   # refreshes ios/EngineBundle
+```
+
+## Core logic
+
+```sh
+cd Packages/SnarwalCore
+swift test
 ```
 
 ## License

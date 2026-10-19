@@ -7,6 +7,9 @@
 //   kiri/pool.js          Kiri minion worker (module worker)
 //   wasm/*.wasm           geometry kernels fetched at runtime
 //
+// `npm run bundle:ios` writes a minified copy to ios/EngineBundle, which is
+// committed so the app builds in Xcode without Node.
+//
 // Kiri:Moto lives in vendor/grid-apps (git submodule, pinned). Only its FDM
 // engine path is bundled; the LGPL planegcs solver (void modeler) is not.
 
@@ -19,8 +22,9 @@ import { fileURLToPath } from 'node:url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const kiri = path.resolve(here, '../vendor/grid-apps');
-const dist = path.join(here, 'dist');
 const prod = process.argv.includes('--prod');
+const outArg = process.argv.indexOf('--out');
+const dist = outArg > 0 ? path.resolve(process.argv[outArg + 1]) : path.join(here, 'dist');
 
 function run(cmd, cwd) {
     console.log(`$ ${cmd}`);

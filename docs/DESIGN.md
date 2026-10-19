@@ -60,24 +60,42 @@ Stand: 2026-10-19, Ergebnis der Design-Session („grill-me“).
 
 ```
 snarwal/
-├── vendor/grid-apps/        Kiri:Moto (Submodul, gepinnt)
-├── engine/                  JS-Bundle für den WKWebView
-│   ├── build.mjs            baut engine/dist (Engine, Worker, WASM)
-│   ├── src/snarwal-engine.js  Brücke: window.snarwal.slice({ stl, process, tool })
-│   ├── profiles/            U1-Geräteprofil + Basis-Prozess
-│   └── test/                Headless-Test (Playwright/Chromium)
-├── ios/                     SwiftUI-App (folgt)
+├── vendor/grid-apps/          Kiri:Moto (Submodul, gepinnt)
+├── engine/                    JS-Bundle für den WKWebView
+│   ├── build.mjs              baut engine/dist bzw. ios/EngineBundle
+│   ├── src/snarwal-engine.js  Brücke: snarwal.loadModel(), snarwal.slice()
+│   ├── profiles/              U1-Geräteprofil + Basis-Prozess
+│   └── test/                  Headless-Tests (Playwright/Chromium)
+├── Packages/SnarwalCore/      Swift-Logik mit Tests (läuft auch unter Linux)
+│                              Geometrie, Platte, Materialien, G-Code-Vorschau,
+│                              Moonraker-Client
+├── ios/                       Xcode-Projekt + SwiftUI-App (siehe ios/README.md)
+│   └── EngineBundle/          gebaute Engine (eingecheckt, damit Xcode ohne Node baut)
 └── docs/
 ```
 
-- Die App liefert `engine/dist` als Ressource aus und lädt sie über einen `WKURLSchemeHandler`
-  (z. B. `snarwal://engine/`). Ein `file://` geht nicht, weil Module-Worker und das Laden der WASM-Dateien dort scheitern.
-- Swift ruft `callAsyncJavaScript("return await snarwal.slice(...)")` auf und erhält G-Code und Statistiken zurück.
+- Die App liefert `EngineBundle` aus und startet einen Mini-HTTP-Server nur auf `127.0.0.1`
+  (`LocalEngineServer`). Weder `file://` noch ein eigenes URL-Schema erlauben Kiris Module-Worker zuverlässig.
+- Swift ruft `callAsyncJavaScript("return await snarwal.slice(...)")` auf.
+  Objekte gehen als Base64-Float32-Dreiecke in Bettkoordinaten hinein, G-Code kommt zurück.
+  Den Fortschritt meldet die Engine über `webkit.messageHandlers.snarwal`.
+- Der G-Code bekommt einen Orca-kompatiblen Kopf und Footer. Snapmakers Moonraker-Fork liest
+  Druckzeit, Schichten und Filament sonst nur aus Prusa-/Orca-Dateien (geprüft mit dessen `metadata.py`).
+- Drucker:
+  - Erreichbar über HTTP auf Port 80 (nginx → Moonraker), Status per Polling von `printer/objects/query`.
+  - Licht: `SET_LED LED=cavity_led WHITE=0/1`. Lüfter: `M106`.
+  - Filament pro Kopf kommt aus `print_task_config`.
+  - Kamera:
+    - Extended-Firmware: WebRTC-Seite `/webcam/webrtc`.
+    - Fallback: `/webcam/snapshot.jpg`.
+    - Original-Firmware: `monitor.jpg` + `camera.start_monitor` per Websocket.
+  - Gerätesuche per mDNS `_snapmaker._tcp`, die IP steht im TXT-Record `ip`.
 
 ## Entwicklung & Test
 
-- Den Code schreibt Claude. Gebaut wird lokal in **Xcode** auf dem Mac, mit eigenem Developer-Account.
-- Engine-Test: `cd engine && npm install && npm run build && npm test`.
+- Den Code schreibt Claude. Gebaut wird lokal in **Xcode** auf dem Mac, mit eigenem Developer-Account (siehe `ios/README.md`).
+- Engine-Tests: `cd engine && npm install && npm run build && npm test` (22 Prüfungen).
+- Logik-Tests: `cd Packages/SnarwalCore && swift test` (20 Tests).
 - Testplan am echten Drucker, stufenweise:
   1. Den erzeugten G-Code mit Orca-G-Code vergleichen (ohne Drucker).
   2. Testwürfel mit einem Kopf.
@@ -86,13 +104,14 @@ snarwal/
 
 ## Meilensteine
 
-1. ✅ **M1 – Engine-Prototyp**: Kiri slict headless einen 20-mm-Würfel mit U1-Profil (Test grün).
-2. **M2 – iOS-Hülle**: Xcode-Projekt, Engine im WKWebView, STL öffnen → G-Code teilen.
-3. **M3 – Drucker**: Verbindung, Upload, „Jetzt drucken?“, Status.
-4. **M4 – Druckplatte & Vorschau**: 3D-Ansicht, mehrere Objekte, Schichtvorschau.
-5. **M5 – Mehrere Köpfe**: Kopfzuordnung, 3MF-Metadaten, Filament vom Drucker.
-6. **M6 – Überwachung komplett**: Kamera, Steuerung, Temperaturen.
-7. **M7 – App Store**: Icon, Lokalisierung, Datenschutz, Review.
+1. ✅ **M1 – Engine-Prototyp**: Kiri slict headless mit U1-Profil.
+2. ✅ **M2 – Engine komplett**: mehrere Objekte, 3MF mit Orca-Kopfzuordnung, Orca-kompatible Metadaten.
+3. ✅ **M3 – SnarwalCore**: Platte, Materialien, Einstellungen, G-Code-Vorschau, Moonraker-Client (getestet).
+4. 🟡 **M4 – iOS-App**: alle Bildschirme geschrieben (Start, Platte mit 3D, Einstellungen, Vorschau,
+   Senden, Drucker mit Kamera/Steuerung, Verbinden). **Noch nicht in Xcode kompiliert.**
+5. **M5 – Erster Build & Test am Gerät**: Compiler-Fehler beheben, Engine im WKWebView prüfen.
+6. **M6 – Testdrucke** nach Testplan (G-Code-Vergleich mit Orca → Würfel → 2 Köpfe → 4 Köpfe).
+7. **M7 – App Store**: Englische Übersetzung, Datenschutzangaben, Screenshots, Review.
 
 ## Offen / später
 
@@ -101,4 +120,6 @@ snarwal/
 - Baumstützen, Farbmalen, STEP-Import, Push-Benachrichtigungen, Experteneinstellungen.
 - Viele Kiri-Dateien tragen den Kopf „All Rights Reserved“, obwohl das Repo MIT-lizenziert ist.
   Vor dem App-Store-Release den Autor (Stewart Allen) um eine kurze Bestätigung bitten.
-- Moonraker-Metadaten: prüfen, ob Moonraker Druckzeit und Layer aus Kiri-G-Code erkennt. Falls nicht, Header ergänzen.
+- Thumbnail (PNG) im G-Code für Touchscreen und Moonraker.
+- Englische Übersetzung (String Catalog; Entwicklungssprache ist Deutsch).
+- Schicht-Vorschau in 3D statt Draufsicht.
