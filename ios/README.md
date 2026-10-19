@@ -27,6 +27,9 @@ Bei jedem Push baut GitHub Actions die App mit Xcode, lässt die Tests laufen un
 - **SnarwalCore-Tests** (macOS)
 - **App-Build + SnarwalTests im iOS-Simulator**: startet die echte Kiri-Engine in WebKit,
   lädt ein STL und slict zwei Köpfe inklusive Thumbnail
+- **UI-Test (SnarwalUITests)**: bedient die App wie ein Mensch – Kopf zuweisen, Slicen, Vorschau,
+  „An U1 senden“, „Drucken“ – gegen einen simulierten U1 (`ci/mock_moonraker.py`); danach prüft die
+  CI, dass beim Drucker vollständiger U1-G-Code angekommen ist
 - **Engine-Tests** in Chromium (Linux)
 - **Screenshots** (iPhone und iPad) als Artefakt „screenshots“ am jeweiligen Lauf unter
   *Actions* → *CI*
@@ -43,6 +46,7 @@ Nur in Debug-Builds (Xcode: Product → Scheme → Edit Scheme → Run → Argum
 | `-SnarwalDemo` | Beispiel-Platte mit drei Objekten |
 | `-SnarwalAutoSlice` | slict nach dem Start automatisch |
 | `-SnarwalPrinterTab` | zeigt den Drucker-Tab mit simuliertem Druck |
+| `-SnarwalPrinterHost 127.0.0.1:7125` | verbindet mit dieser Adresse (z. B. dem Mock-Drucker) |
 
 ## Aufbau
 
@@ -51,6 +55,7 @@ Nur in Debug-Builds (Xcode: Product → Scheme → Edit Scheme → Run → Argum
 | `Snarwal/` | SwiftUI-App (wird von Xcode automatisch eingelesen) |
 | `Snarwal/Engine/` | WKWebView mit der Kiri:Moto-Engine, lokaler Mini-Server auf 127.0.0.1 |
 | `SnarwalTests/` | Engine-Tests im Simulator |
+| `SnarwalUITests/` | Bedien-Test: Slicen → Senden → Drucken |
 | `Snarwal/Localizable.xcstrings` | Englische Übersetzung (Quellsprache Deutsch) |
 | `Snarwal/Slice/` | Druckplatte (SceneKit), Einstellungen, Vorschau, Senden |
 | `Snarwal/Printer/` | Moonraker-Verbindung, Suche per mDNS, Kamera, Steuerung |

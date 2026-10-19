@@ -48,6 +48,7 @@ struct PreviewScreen: View {
                         Text("An U1 senden").font(.headline).frame(maxWidth: .infinity, minHeight: 50)
                     }
                     .buttonStyle(.borderedProminent)
+                    .accessibilityIdentifier("sendButton")
                     if let url = result.fileURL {
                         ShareLink(item: url) {
                             Label("G-Code teilen", systemImage: "square.and.arrow.up")

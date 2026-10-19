@@ -21,12 +21,16 @@ Modelle werden (noch) einfarbig gedruckt.
 
 ## 3. Platte einrichten
 
-- **Objekt antippen** (in der 3D-Ansicht oder in der Leiste darunter) wählt es aus.
-- **Farbpunkt** an einem Objekt: Kopf T1–T4 wählen.
-- Werkzeuge: **Drehen** (90°), **Skalieren**, **Flachlegen**, **Anordnen**, **Objekt** → Duplizieren/Entfernen.
-- Ansicht: mit einem Finger drehen, mit zwei Fingern zoomen/verschieben.
+- **Objekt antippen** – in der 3D-Ansicht oder in der Leiste darunter. Darunter erscheint das
+  Objekt mit seinen Maßen und vier großen Knöpfen **T1–T4**: antippen = dieser Druckkopf druckt das Objekt.
+- **Objekt mit dem Finger ziehen** verschiebt es auf der Platte (es bleibt immer auf dem Bett).
+- Werkzeuge unter der 3D-Ansicht: **Drehen** (90°), **Skalieren**, **Flachlegen**, **Anordnen**,
+  **Objekt** → Duplizieren/Entfernen.
+- Weitere Modelle: **+ Hinzufügen** in der Objektleiste oder oben rechts.
+- Ansicht: auf freier Fläche mit einem Finger drehen, mit zwei Fingern zoomen/verschieben.
 
-Gelbe Hinweise erklären, was noch nicht passt (außerhalb des Betts, gemischte Materialien).
+Gelbe Hinweise erklären, was noch nicht passt (außerhalb des Betts, gemischte Materialien); unter
+**Slicen** steht, warum der Knopf gerade gesperrt ist.
 In Version 1 müssen alle verwendeten Köpfe dasselbe Material haben (z. B. 4× PLA in verschiedenen Farben).
 
 ## 4. Einstellungen
@@ -41,7 +45,8 @@ RFID erkannte Filament je Kopf; sonst stellst du Material und Farbe pro Kopf sel
 2. **Vorschau**: Schicht-Regler, Druckzeit, Filament pro Kopf. Über **G-Code teilen** lässt sich
    die Datei auch speichern.
 3. **An U1 senden** → Snarwal vergleicht geplante Köpfe mit dem Filament im Drucker →
-   **Drucken** (startet sofort) oder **Nur hochladen**.
+   **Drucken** (startet sofort, die App wechselt zum Drucker-Tab) oder **Nur hochladen**.
+   Ist noch kein Drucker eingerichtet, führt **Drucker verbinden** direkt dorthin.
 
 ## 6. Druck überwachen
 

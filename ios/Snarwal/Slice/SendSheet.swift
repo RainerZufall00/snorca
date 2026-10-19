@@ -66,8 +66,18 @@ struct SendSheet: View {
                 }
             }
             Section {
-                if printer.link != .online {
-                    Text("Kein Drucker verbunden. Richte den U1 im Tab „Drucker“ ein.")
+                if printer.host.isEmpty {
+                    Text("Noch kein Drucker eingerichtet.")
+                        .foregroundStyle(.secondary)
+                    Button {
+                        dismiss()
+                        model.showPreview = false
+                        model.tab = .printer
+                    } label: {
+                        Label("Drucker verbinden", systemImage: "printer")
+                    }
+                } else if printer.link != .online {
+                    Text("Der U1 ist gerade nicht erreichbar. Ist er eingeschaltet und im selben WLAN?")
                         .foregroundStyle(.secondary)
                 } else if busy {
                     Text("Der U1 druckt gerade. Du kannst die Datei hochladen und später starten.")
@@ -86,6 +96,7 @@ struct SendSheet: View {
                     .frame(maxWidth: .infinity)
                 }
                 .disabled(printer.link != .online || busy || sending)
+                .accessibilityIdentifier("printButton")
                 Button("Nur hochladen") {
                     send(result, start: false)
                 }

@@ -11,6 +11,16 @@
         }
       }
     },
+    "%@, %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, %@"
+          }
+        }
+      }
+    },
     "%@: Kopf wählen": {
       "localizations": {
         "en": {
@@ -121,6 +131,16 @@
         }
       }
     },
+    "Bitte zuerst die Hinweise oben beheben.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Please resolve the notes above first."
+          }
+        }
+      }
+    },
     "Brim": {
       "localizations": {
         "en": {
@@ -171,6 +191,16 @@
         }
       }
     },
+    "Der U1 ist gerade nicht erreichbar. Ist er eingeschaltet und im selben WLAN?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The U1 is not reachable right now. Is it switched on and on the same Wi-Fi?"
+          }
+        }
+      }
+    },
     "Die IP steht am Touchscreen des U1 unter Einstellungen → WLAN. Für unterwegs kannst du die Tailscale-Adresse eintragen.": {
       "localizations": {
         "en": {
@@ -187,6 +217,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "The objects were outside the U1 bed and have been rearranged."
+          }
+        }
+      }
+    },
+    "Die Slicing-Engine ist nicht verfügbar. Starte die App neu.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The slicing engine is unavailable. Please restart the app."
+          }
+        }
+      }
+    },
+    "Die Slicing-Engine startet noch …": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The slicing engine is still starting …"
           }
         }
       }
@@ -257,6 +307,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Connect printer"
+          }
+        }
+      }
+    },
+    "Druckkopf": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Print head"
           }
         }
       }
@@ -431,6 +491,16 @@
         }
       }
     },
+    "Hinzufügen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add"
+          }
+        }
+      }
+    },
     "IP-Adresse oder Hostname": {
       "localizations": {
         "en": {
@@ -487,16 +557,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Print now?"
-          }
-        }
-      }
-    },
-    "Kein Drucker verbunden. Richte den U1 im Tab „Drucker“ ein.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No printer connected. Set up the U1 in the Printer tab."
           }
         }
       }
@@ -647,6 +707,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Not all objects fit on the build plate. Scale them down or remove some."
+          }
+        }
+      }
+    },
+    "Noch kein Drucker eingerichtet.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No printer set up yet."
           }
         }
       }
@@ -947,6 +1017,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Temperatures"
+          }
+        }
+      }
+    },
+    "Tippe ein Objekt an, um es zu bearbeiten und einem Druckkopf zuzuordnen. Ziehen verschiebt es auf der Platte.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap an object to edit it and assign a print head. Drag it to move it on the plate."
           }
         }
       }

@@ -3,13 +3,15 @@ import SnarwalCore
 import SwiftUI
 import UIKit
 
-/// 3D view of the U1 bed with the plate objects. Drag to orbit, pinch to
-/// zoom, tap an object to select it.
+/// 3D view of the U1 bed with the plate objects. Tap an object to select
+/// it, drag an object to move it; dragging elsewhere orbits, pinch zooms.
 struct PlateSceneView: UIViewRepresentable {
     let objects: [PlateObject]
     let heads: [HeadFilament]
     let selectedID: UUID?
     let onSelect: (UUID?) -> Void
+    var onMove: (UUID, Double, Double) -> Void = { _, _, _ in }
+    var onMoveEnded: () -> Void = {}
 
     func makeCoordinator() -> Coordinator {
         Coordinator(onSelect: onSelect)
@@ -28,19 +30,34 @@ struct PlateSceneView: UIViewRepresentable {
         view.defaultCameraController.worldUp = SCNVector3(x: 0, y: 0, z: 1)
         let tap = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.tapped(_:)))
         view.addGestureRecognizer(tap)
+        let drag = UIPanGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.dragged(_:)))
+        drag.maximumNumberOfTouches = 1
+        drag.delegate = context.coordinator
+        // the camera's own pan only starts once it is clear the touch is not on an object
+        for recognizer in view.gestureRecognizers ?? [] where recognizer is UIPanGestureRecognizer {
+            recognizer.require(toFail: drag)
+        }
+        view.addGestureRecognizer(drag)
         return view
     }
 
     func updateUIView(_ view: SCNView, context: Context) {
         context.coordinator.onSelect = onSelect
+        context.coordinator.onMove = onMove
+        context.coordinator.onMoveEnded = onMoveEnded
         context.coordinator.update(objects: objects, heads: heads, selectedID: selectedID)
     }
 
     @MainActor
-    final class Coordinator: NSObject {
+    final class Coordinator: NSObject, UIGestureRecognizerDelegate {
         let scene = SCNScene()
         let cameraNode = SCNNode()
         var onSelect: (UUID?) -> Void
+        var onMove: (UUID, Double, Double) -> Void = { _, _, _ in }
+        var onMoveEnded: () -> Void = {}
+        private var positions: [UUID: (x: Double, y: Double)] = [:]
+        /// Object being dragged and the grab point's offset from its centre.
+        private var drag: (id: UUID, dx: Double, dy: Double)?
         private var nodes: [UUID: SCNNode] = [:]
         private let selectionNode = SCNNode()
         /// Geometry is built once per mesh; edits only change node transforms.
@@ -97,6 +114,7 @@ struct PlateSceneView: UIViewRepresentable {
         }
 
         func update(objects: [PlateObject], heads: [HeadFilament], selectedID: UUID?) {
+            positions = Dictionary(uniqueKeysWithValues: objects.map { ($0.id, $0.position) })
             let ids = Set(objects.map(\.id))
             for (id, node) in nodes where !ids.contains(id) {
                 node.removeFromParentNode()
@@ -179,6 +197,46 @@ struct PlateSceneView: UIViewRepresentable {
             material.isDoubleSided = true
             geometry.materials = [material]
             return geometry
+        }
+
+        private func objectID(at point: CGPoint, in view: SCNView) -> UUID? {
+            let hits = view.hitTest(point, options: [.searchMode: SCNHitTestSearchMode.all.rawValue])
+            return hits.lazy.compactMap { $0.node.name.flatMap(UUID.init(uuidString:)) }.first
+        }
+
+        /// Where the touch ray meets the bed plane (z = 0), in bed millimetres.
+        private func bedPoint(at point: CGPoint, in view: SCNView) -> (x: Double, y: Double)? {
+            let near = view.unprojectPoint(SCNVector3(x: Float(point.x), y: Float(point.y), z: 0))
+            let far = view.unprojectPoint(SCNVector3(x: Float(point.x), y: Float(point.y), z: 1))
+            let dz = far.z - near.z
+            guard abs(dz) > 1e-6 else { return nil }
+            let t = -near.z / dz
+            guard t > 0 else { return nil }
+            return (Double(near.x + (far.x - near.x) * t), Double(near.y + (far.y - near.y) * t))
+        }
+
+        func gestureRecognizerShouldBegin(_ gesture: UIGestureRecognizer) -> Bool {
+            guard gesture is UIPanGestureRecognizer, let view = gesture.view as? SCNView else { return true }
+            let start = gesture.location(in: view)
+            guard let id = objectID(at: start, in: view), let position = positions[id],
+                  let grab = bedPoint(at: start, in: view) else { return false }
+            drag = (id, position.x - grab.x, position.y - grab.y)
+            return true
+        }
+
+        @objc func dragged(_ gesture: UIPanGestureRecognizer) {
+            guard let view = gesture.view as? SCNView, let drag else { return }
+            switch gesture.state {
+            case .began, .changed:
+                if let p = bedPoint(at: gesture.location(in: view), in: view) {
+                    onMove(drag.id, p.x + drag.dx, p.y + drag.dy)
+                }
+            case .ended, .cancelled, .failed:
+                self.drag = nil
+                onMoveEnded()
+            default:
+                break
+            }
         }
 
         @objc func tapped(_ gesture: UITapGestureRecognizer) {

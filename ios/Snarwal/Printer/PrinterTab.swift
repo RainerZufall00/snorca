@@ -166,6 +166,7 @@ struct PrinterScreen: View {
             .padding(.horizontal, 10)
             .padding(.vertical, 5)
             .background(color.opacity(0.14), in: Capsule())
+            .accessibilityIdentifier("statusChip")
     }
 
     private func progressCard(_ status: PrinterStatus) -> some View {

@@ -38,6 +38,8 @@ final class AppModel {
     var manualHeads = HeadFilament.defaults()
     var sliceState: SliceState = .idle
     var showPreview = false
+    /// Increases with every finished slice (drives the success haptic).
+    var sliceCount = 0
     var importError: String?
     var isImporting = false
     /// Notes from the last import (painted models, positions reset, ...).
@@ -77,6 +79,9 @@ final class AppModel {
                 }
                 await slice()
             }
+        }
+        if let flag = arguments.firstIndex(of: "-SnarwalPrinterHost"), flag + 1 < arguments.count {
+            printer.configure(host: arguments[flag + 1])
         }
         if arguments.contains("-SnarwalPrinterTab") {
             printer.loadDemo()
@@ -193,6 +198,20 @@ final class AppModel {
         invalidateSlice()
     }
 
+    /// Drag on the 3D plate; keeps the footprint on the bed.
+    func move(_ id: UUID, to point: (x: Double, y: Double)) {
+        guard let index = plate.objects.firstIndex(where: { $0.id == id }) else { return }
+        let size = plate.objects[index].size
+        let halfX = min(size.x / 2, PrinterSpec.bedWidth / 2), halfY = min(size.y / 2, PrinterSpec.bedDepth / 2)
+        plate.objects[index].position = (min(max(point.x, halfX), PrinterSpec.bedWidth - halfX),
+                                         min(max(point.y, halfY), PrinterSpec.bedDepth - halfY))
+        selectedID = id
+    }
+
+    func finishMove() {
+        invalidateSlice()
+    }
+
     func duplicateSelected() {
         guard let index = selectedIndex else { return }
         var copy = plate.objects[index]
@@ -266,6 +285,7 @@ final class AppModel {
             let saved = (try? gcode.write(to: fileURL, atomically: true, encoding: .utf8)) != nil
             sliceState = .done(SliceResult(gcode: gcode, summary: summary, preview: preview, filename: filename,
                                            fileURL: saved ? fileURL : nil))
+            sliceCount += 1
             showPreview = true
         } catch {
             sliceState = .failed(error.localizedDescription)

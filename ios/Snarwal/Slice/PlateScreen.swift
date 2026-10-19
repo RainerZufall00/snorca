@@ -26,6 +26,7 @@ struct PlateScreen: View {
                         controls.padding()
                     }
                     .background(Color(.systemGroupedBackground))
+                    .accessibilityIdentifier("controls")
                 }
             }
         }
@@ -58,9 +59,10 @@ struct PlateScreen: View {
 
     private var viewport: some View {
         VStack(spacing: 0) {
-            PlateSceneView(objects: model.plate.objects, heads: model.heads, selectedID: model.selectedID) { id in
-                model.selectedID = id
-            }
+            PlateSceneView(objects: model.plate.objects, heads: model.heads, selectedID: model.selectedID,
+                           onSelect: { id in model.selectedID = id },
+                           onMove: { id, x, y in model.move(id, to: (x, y)) },
+                           onMoveEnded: { model.finishMove() })
             ObjectToolbar()
         }
         .background(Color.snarwalViewport)
@@ -69,6 +71,7 @@ struct PlateScreen: View {
     private var controls: some View {
         VStack(alignment: .leading, spacing: 14) {
             ObjectStrip()
+            SelectionPanel()
             ForEach(Array(model.issues.enumerated()), id: \.offset) { _, issue in
                 WarningBanner(text: issue.message)
             }
@@ -163,7 +166,7 @@ private struct ObjectToolbar: View {
     }
 }
 
-/// Objects on the plate; the dot picks the head.
+/// Objects on the plate; tapping one selects it.
 private struct ObjectStrip: View {
     @Environment(AppModel.self) private var model
 
@@ -173,42 +176,101 @@ private struct ObjectStrip: View {
                 ForEach(model.plate.objects) { object in
                     chip(object)
                 }
+                ImportButton {
+                    Label("Hinzufügen", systemImage: "plus")
+                        .font(.subheadline.weight(.semibold))
+                        .padding(.horizontal, 14)
+                        .frame(minHeight: 44)
+                        .background(.background, in: Capsule())
+                        .overlay(Capsule().strokeBorder(Color(.separator), style: StrokeStyle(lineWidth: 1, dash: [4, 3])))
+                }
+                .buttonStyle(.plain)
             }
+            .padding(.vertical, 2)
         }
     }
 
     private func chip(_ object: PlateObject) -> some View {
         let head = model.heads.first { $0.tool == object.tool } ?? HeadFilament(tool: object.tool)
         let selected = object.id == model.selectedID
-        return HStack(spacing: 8) {
-            Menu {
-                ForEach(model.heads) { h in
-                    Button {
-                        model.setTool(h.tool, for: object.id)
-                    } label: {
-                        Label(h.title, systemImage: h.tool == object.tool ? "checkmark" : "circle.fill")
-                    }
-                }
-            } label: {
-                FilamentDot(color: head.color, size: 26)
-                    .frame(width: 44, height: 44)
-            }
-            .accessibilityLabel("\(object.name): Kopf wählen")
-            Button {
-                model.selectedID = object.id
-            } label: {
+        return Button {
+            model.selectedID = selected ? nil : object.id
+        } label: {
+            HStack(spacing: 8) {
+                FilamentDot(color: head.color, size: 24)
                 VStack(alignment: .leading, spacing: 1) {
                     Text(object.name).font(.subheadline.weight(.semibold)).lineLimit(1)
-                    Text(head.title + (object.scale != 1 ? " · \(Int(object.scale * 100)) %" : ""))
-                        .font(.caption).foregroundStyle(.secondary)
+                    Text(head.label).font(.caption).foregroundStyle(.secondary)
                 }
-                .padding(.trailing, 12)
-                .frame(minHeight: 44)
             }
-            .buttonStyle(.plain)
+            .padding(.leading, 10)
+            .padding(.trailing, 14)
+            .frame(minHeight: 44)
+            .background(.background, in: Capsule())
+            .overlay(Capsule().strokeBorder(selected ? Color.accentColor : Color(.separator), lineWidth: selected ? 2 : 1))
         }
-        .background(.background, in: Capsule())
-        .overlay(Capsule().strokeBorder(selected ? Color.accentColor : Color(.separator), lineWidth: selected ? 2 : 1))
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(selected ? .isSelected : [])
+    }
+}
+
+/// Details of the selected object: size and which head prints it.
+private struct SelectionPanel: View {
+    @Environment(AppModel.self) private var model
+
+    var body: some View {
+        if let index = model.selectedIndex {
+            let object = model.plate.objects[index]
+            let size = object.size
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(alignment: .firstTextBaseline) {
+                    Text(object.name).font(.headline).lineLimit(1)
+                    Spacer()
+                    Text(verbatim: "\(Self.mm(size.x)) × \(Self.mm(size.y)) × \(Self.mm(size.z)) mm")
+                        .font(.footnote.monospacedDigit())
+                        .foregroundStyle(.secondary)
+                }
+                Text("Druckkopf").font(.footnote.weight(.semibold)).foregroundStyle(.secondary)
+                HStack(spacing: 8) {
+                    ForEach(model.heads) { head in
+                        headButton(head, selected: head.tool == object.tool, objectID: object.id)
+                    }
+                }
+            }
+            .padding(14)
+            .background(.background, in: RoundedRectangle(cornerRadius: 14))
+        } else if !model.plate.objects.isEmpty {
+            Label("Tippe ein Objekt an, um es zu bearbeiten und einem Druckkopf zuzuordnen. Ziehen verschiebt es auf der Platte.",
+                  systemImage: "hand.tap")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private func headButton(_ head: HeadFilament, selected: Bool, objectID: UUID) -> some View {
+        Button {
+            model.setTool(head.tool, for: objectID)
+        } label: {
+            VStack(spacing: 4) {
+                FilamentDot(color: head.color, size: 26)
+                Text(head.label).font(.caption.weight(.bold))
+                Text(head.loaded || !head.fromPrinter ? head.material.rawValue : String(localized: "leer"))
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, minHeight: 72)
+            .background(selected ? Color.accentColor.opacity(0.14) : Color(.secondarySystemBackground),
+                        in: RoundedRectangle(cornerRadius: 12))
+            .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(selected ? Color.accentColor : .clear, lineWidth: 2))
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("\(head.label), \(head.material.rawValue)")
+        .accessibilityAddTraits(selected ? .isSelected : [])
+        .accessibilityIdentifier("head-\(head.label)")
+    }
+
+    static func mm(_ value: Double) -> String {
+        value.formatted(.number.precision(.fractionLength(0...1)))
     }
 }
 
@@ -252,6 +314,14 @@ private struct SliceButton: View {
             }
             .buttonStyle(.borderedProminent)
             .disabled(!model.canSlice || isSlicing)
+            .accessibilityIdentifier("sliceButton")
+            .sensoryFeedback(.success, trigger: model.sliceCount)
+            if let reason = disabledReason {
+                Text(reason)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
             if model.result != nil, !isSlicing {
                 Button("Letzte Vorschau öffnen") { model.showPreview = true }
                     .font(.subheadline)
@@ -262,5 +332,15 @@ private struct SliceButton: View {
     private var isSlicing: Bool {
         if case .slicing = model.sliceState { return true }
         return false
+    }
+
+    /// Why "Slicen" is greyed out, so nobody is left guessing.
+    private var disabledReason: LocalizedStringKey? {
+        guard !isSlicing, !model.canSlice else { return nil }
+        switch model.engine.state {
+        case .loading: return "Die Slicing-Engine startet noch …"
+        case .failed: return "Die Slicing-Engine ist nicht verfügbar. Starte die App neu."
+        case .ready: return model.issues.isEmpty ? nil : "Bitte zuerst die Hinweise oben beheben."
+        }
     }
 }

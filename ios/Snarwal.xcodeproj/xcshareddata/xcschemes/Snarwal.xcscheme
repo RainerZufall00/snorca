@@ -38,6 +38,16 @@
                ReferencedContainer = "container:Snarwal.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "5A0000000000000000000703"
+               BuildableName = "SnarwalUITests.xctest"
+               BlueprintName = "SnarwalUITests"
+               ReferencedContainer = "container:Snarwal.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

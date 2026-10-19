@@ -17,8 +17,10 @@ jobs:
       - uses: actions/checkout@v4
       - name: Xcode version
         run: xcodebuild -version
-      - name: SnarwalCore tests
-        run: swift test --package-path Packages/SnarwalCore
+      - name: SnarwalCore tests (incl. HTTP against a mock U1)
+        run: |
+          python3 ci/mock_moonraker.py --port 17125 --upload-dir "$RUNNER_TEMP/core-uploads" > "$RUNNER_TEMP/core-mock.log" 2>&1 &
+          SNARWAL_MOCK_PRINTER=127.0.0.1:17125 swift test --package-path Packages/SnarwalCore
       - name: Build and test the app in the iOS simulator
         run: |
           set -o pipefail
@@ -26,14 +28,27 @@ jobs:
           pick() { xcrun simctl list devices available -j | python3 -c "import json,sys; d=json.load(sys.stdin)['devices']; print(next(x['udid'] for k in sorted(d, reverse=True) if 'iOS' in k for x in d[k] if x['name'].startswith('$1')))"; }
           IPHONE=$(pick iPhone); IPAD=$(pick iPad)
           echo "IPHONE=$IPHONE" >> "$GITHUB_ENV"; echo "IPAD=$IPAD" >> "$GITHUB_ENV"
+          # mock U1 for the UI test (slice → send → print)
+          python3 ci/mock_moonraker.py --port 7125 --upload-dir "$RUNNER_TEMP/uploads" > "$RUNNER_TEMP/mock.log" 2>&1 &
           xcodebuild \
             -project ios/Snarwal.xcodeproj \
             -scheme Snarwal \
             -destination "id=$IPHONE" \
             -derivedDataPath build \
+            -resultBundlePath build/Tests.xcresult \
             -configuration Debug \
             CODE_SIGNING_ALLOWED=NO \
             test 2>&1 | grep -E "Test Case|Executed|error:|warning: .*/ios/|\*\* (TEST|BUILD)"
+      - name: Check what the app sent to the (mock) printer
+        run: |
+          grep -E "stored|POST" "$RUNNER_TEMP/mock.log" || true
+          FILE=$(ls "$RUNNER_TEMP"/uploads/*.gcode | head -1)
+          echo "uploaded: $FILE ($(wc -c < "$FILE") bytes)"
+          for pattern in "PRINT_START" "BED_MESH_CALIBRATE" "SM_PRINT_PREEXTRUDE_FILAMENT" "; thumbnail begin 300x300" \
+                         "; estimated printing time" "; filament used \[g\]" "PRINT_END"; do
+            grep -q -- "$pattern" "$FILE" && echo "ok   $pattern" || { echo "MISSING $pattern"; exit 1; }
+          done
+          grep -c "^G1 " "$FILE" | xargs echo "G1 moves:"
       - name: Screenshots
         if: always()
         timeout-minutes: 35
@@ -67,6 +82,9 @@ jobs:
           prepare "$IPAD"
           shoot "$IPAD" ipad-1-plate 15 -SnarwalDemo
           shoot "$IPAD" ipad-2-printer 12 -SnarwalPrinterTab
+          # screenshots taken by the UI test
+          xcrun xcresulttool export attachments --path build/Tests.xcresult --output-path ui-attachments || true
+          i=1; for f in ui-attachments/*.png; do [ -e "$f" ] && cp "$f" "screenshots/uitest-$i.png" && i=$((i+1)); done
       - uses: actions/upload-artifact@v4
         if: always()
         with:
