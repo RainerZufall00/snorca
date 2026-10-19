@@ -96,7 +96,9 @@ snarwal/
 - Den Code schreibt Claude. Gebaut wird lokal in **Xcode** auf dem Mac, mit eigenem Developer-Account (siehe `ios/README.md`).
 - Engine-Tests: `cd engine && npm install && npm run build && npm test` (22 Prüfungen).
 - Logik-Tests: `cd Packages/SnarwalCore && swift test` (20 Tests).
-- CI (GitHub Actions): alles oben plus App-Build, Engine-Test im iOS-Simulator und Screenshots.
+- CI (GitHub Actions): alles oben plus App-Build, Engine-Test im iOS-Simulator (echtes WebKit:
+  STL laden, zwei Köpfe slicen, Thumbnail) und Screenshots von iPhone und iPad.
+  Die Screenshots liegen jeweils auf dem Branch `ci-screenshots` (wird bei jedem Lauf überschrieben).
 - Testplan am echten Drucker, stufenweise:
   1. Den erzeugten G-Code mit Orca-G-Code vergleichen (ohne Drucker).
   2. Testwürfel mit einem Kopf.
