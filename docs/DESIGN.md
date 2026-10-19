@@ -102,6 +102,23 @@ snarwal/
   3. Test mit 2 Köpfen, du stehst dabei am Drucker.
   4. Alle 4 Köpfe.
 
+## Ergebnis Testplan Schritt 1 (G-Code-Vergleich)
+
+`engine/test/compare-orca.py` vergleicht die Firmware-Makros im Start-/End-G-Code mit dem
+offiziellen U1-Profil von Snapmaker Orca (Stand 2026-01-28):
+
+- Ende: identisch (`PRINT_END`, `TIMELAPSE_STOP`).
+- Start: 32 von 34 Makros in identischer Reihenfolge und mit denselben Parametern
+  (Bett-Mesh 11×11, Düsenreinigung, Purge-Linie X85→X185).
+- Bewusst weggelassen:
+  - `SET_PURIFIER_MODE`: Luftreiniger-Steuerung, optional.
+  - `DEFECT_DETECT_NOODLE_FIRST`: Spaghetti-Erkennung, erst in neuerer Firmware.
+
+  Beides ist harmlos, wenn es fehlt. Auf älterer Firmware würde ein unbekanntes Makro
+  den Druck dagegen abbrechen.
+- Kopfwechsel: wie bei Orca – Z anheben, `M104 T{n}`, `M400`, `T{n}`,
+  `SM_PRINT_PREEXTRUDE_FILAMENT INDEX={n}`.
+
 ## Meilensteine
 
 1. ✅ **M1 – Engine-Prototyp**: Kiri slict headless mit U1-Profil.
