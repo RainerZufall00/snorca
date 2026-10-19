@@ -9,6 +9,8 @@ public struct GCodePreview: Sendable {
     }
 
     public var layers: [Layer]
+    /// Extent of all extrusions (minX, minY, maxX, maxY), nil without any.
+    public var bounds: (minX: Float, minY: Float, maxX: Float, maxY: Float)?
 
     /// Parses G-code written by the Snarwal U1 profile: absolute XY,
     /// relative extrusion, and `;BEFORE_LAYER_CHANGE` / `;<z>` markers.
@@ -60,6 +62,18 @@ public struct GCodePreview: Sendable {
         }
         if let layer = current, !layer.segments.isEmpty { layers.append(layer) }
         self.layers = layers
+        var minX = Float.infinity, minY = Float.infinity, maxX = -Float.infinity, maxY = -Float.infinity
+        for layer in layers {
+            for segments in layer.segments.values {
+                var i = 0
+                while i + 1 < segments.count {
+                    minX = min(minX, segments[i]); maxX = max(maxX, segments[i])
+                    minY = min(minY, segments[i + 1]); maxY = max(maxY, segments[i + 1])
+                    i += 2
+                }
+            }
+        }
+        bounds = minX <= maxX ? (minX, minY, maxX, maxY) : nil
     }
 }
 

@@ -26,7 +26,7 @@ PRINT_END
 """
 
 final class SlicingTests: XCTestCase {
-    func testPreviewSplitsLayersAndTools() {
+    func testPreviewSplitsLayersAndTools() throws {
         let preview = GCodePreview(gcode: sampleGCode)
         XCTAssertEqual(preview.layers.count, 2)
         XCTAssertEqual(preview.layers[0].z, 0.2)
@@ -34,6 +34,8 @@ final class SlicingTests: XCTestCase {
         XCTAssertEqual(preview.layers[0].segments[1], [30, 30, 40, 30])
         XCTAssertEqual(preview.layers[1].z, 0.4)
         XCTAssertEqual(preview.layers[1].segments[1], [40, 30, 50, 30])
+        let b = try XCTUnwrap(preview.bounds)
+        XCTAssertEqual([b.minX, b.minY, b.maxX, b.maxY], [10, 10, 50, 30])
     }
 
     func testSummaryFromFooter() throws {

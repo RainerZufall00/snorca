@@ -123,11 +123,17 @@ private struct LayerCanvas: View {
         Canvas { context, size in
             context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(.snarwalViewport))
             guard preview.layers.indices.contains(index) else { return }
-            let scale = size.width / PrinterSpec.bedWidth
+            // zoom to the printed area (plus margin) instead of the whole bed
+            let b = preview.bounds ?? (minX: 0, minY: 0, maxX: Float(PrinterSpec.bedWidth), maxY: Float(PrinterSpec.bedDepth))
+            let span = CGFloat(max(b.maxX - b.minX, b.maxY - b.minY, 20)) * 1.15
+            let scale = min(size.width, size.height) / span
+            let origin = CGPoint(x: CGFloat(b.minX + b.maxX) / 2 - span / 2, y: CGFloat(b.minY + b.maxY) / 2 - span / 2)
+            context.translateBy(x: -origin.x * scale, y: size.height + origin.y * scale)
+            context.scaleBy(x: scale, y: -scale) // bed Y grows away from the viewer
             if index > 0 {
-                draw(preview.layers[index - 1], in: &context, scale: scale, height: size.height, opacity: 0.18, width: 1)
+                draw(preview.layers[index - 1], in: &context, opacity: 0.18, width: 1 / scale)
             }
-            draw(preview.layers[index], in: &context, scale: scale, height: size.height, opacity: 1, width: max(1, 0.45 * scale))
+            draw(preview.layers[index], in: &context, opacity: 1, width: max(1 / scale, 0.45))
         }
         .accessibilityLabel("Schichtansicht von oben")
     }
@@ -138,15 +144,14 @@ private struct LayerCanvas: View {
         return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255
     }
 
-    private func draw(_ layer: GCodePreview.Layer, in context: inout GraphicsContext, scale: CGFloat, height: CGFloat,
-                      opacity: Double, width: CGFloat) {
+    /// Draws in bed millimetres; the context is already scaled and flipped.
+    private func draw(_ layer: GCodePreview.Layer, in context: inout GraphicsContext, opacity: Double, width: CGFloat) {
         for (tool, segments) in layer.segments {
             var path = Path()
             var i = 0
             while i + 3 < segments.count {
-                // bed Y grows away from the viewer; screen Y grows down
-                path.move(to: CGPoint(x: CGFloat(segments[i]) * scale, y: height - CGFloat(segments[i + 1]) * scale))
-                path.addLine(to: CGPoint(x: CGFloat(segments[i + 2]) * scale, y: height - CGFloat(segments[i + 3]) * scale))
+                path.move(to: CGPoint(x: CGFloat(segments[i]), y: CGFloat(segments[i + 1])))
+                path.addLine(to: CGPoint(x: CGFloat(segments[i + 2]), y: CGFloat(segments[i + 3])))
                 i += 4
             }
             let hex = heads.first { $0.tool == tool }?.colorHex ?? "#E8792B"

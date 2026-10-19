@@ -52,9 +52,9 @@ struct PlateSceneView: UIViewRepresentable {
             buildBed()
             let camera = SCNCamera()
             camera.zFar = 5000
-            camera.fieldOfView = 40
+            camera.fieldOfView = 45
             cameraNode.camera = camera
-            cameraNode.position = SCNVector3(x: 135, y: -230, z: 300)
+            cameraNode.position = SCNVector3(x: 135, y: -260, z: 330)
             cameraNode.look(at: SCNVector3(x: 135, y: 135, z: 0), up: SCNVector3(x: 0, y: 0, z: 1), localFront: SCNVector3(x: 0, y: 0, z: -1))
             scene.rootNode.addChildNode(cameraNode)
 
