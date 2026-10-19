@@ -165,6 +165,23 @@ try {
     check('3MF build transforms are applied', three[1].minX === 200 && three[1].minY === 190, JSON.stringify(three[1]));
     check('unpainted 3MF is not flagged', three.every(o => !o.painted));
 
+    // 3b. automatic supports under an overhang (T shape: pillar + wide top)
+    const tee = (() => {
+        const decode = b => {
+            const buf = Buffer.from(b, 'base64'); // pooled: respect byteOffset
+            return Array.from(new Float32Array(buf.buffer, buf.byteOffset, buf.length / 4));
+        };
+        const pillar = decode(boxFloats(10, 10, 20, 130, 130));
+        const top = decode(boxFloats(40, 40, 4, 115, 115)).map((v, i) => i % 3 === 2 ? v + 20 : v);
+        return Buffer.from(new Float32Array([...pillar, ...top]).buffer).toString('base64');
+    })();
+    const supported = await page.evaluate(v => self.snarwal.slice({ objects: [{ vertices: v, tool: 0 }],
+        process: { sliceSupportType: 'automatic' } }), tee);
+    const unsupported = await page.evaluate(v => self.snarwal.slice({ objects: [{ vertices: v, tool: 0 }],
+        process: { sliceSupportType: 'disabled' } }), tee);
+    check('automatic supports add support paths', /; feature support/.test(supported.gcode) && !/; feature support/.test(unsupported.gcode));
+    check('supports cost extra filament', supported.filamentMM > unsupported.filamentMM, `${supported.filamentMM} vs ${unsupported.filamentMM}`);
+
     // 4. safety: nothing may leave the bed
     const tooBig = await page.evaluate(v => self.snarwal.slice({ objects: [{ vertices: v, tool: 0 }] }).then(() => 'sliced', e => e.message),
         boxFloats(300, 10, 0.4, -15, 100));
