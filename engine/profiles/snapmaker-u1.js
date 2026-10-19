@@ -162,7 +162,7 @@ export const device = {
         'SM_PRINT_PREEXTRUDE_FILAMENT INDEX={tool}',
         'G90',
         'G92 E0',
-        'G1 X{pos_x} Y{pos_y} F21000',
+        // Kiri travels to the next start point itself; only restore the height
         'G1 Z{pos_z} F600',
     ],
 

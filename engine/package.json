@@ -7,7 +7,7 @@
   "type": "module",
   "scripts": {
     "build": "node build.mjs",
-    "test": "node test/slice-cube.mjs"
+    "test": "node test/engine.test.mjs"
   },
   "devDependencies": {
     "esbuild": "0.25.12",
