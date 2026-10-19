@@ -1,0 +1,16 @@
+{
+  "name": "snarwal-engine",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Kiri:Moto slicing engine bundle for the Snarwal iOS app",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node test/slice-cube.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.12",
+    "playwright": "1.56.1"
+  }
+}
