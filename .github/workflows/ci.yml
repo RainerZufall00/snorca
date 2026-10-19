@@ -2,6 +2,7 @@ name: CI
 
 on:
   push:
+    branches-ignore: [ci-screenshots]
   pull_request:
   workflow_dispatch:
 
@@ -10,6 +11,8 @@ jobs:
     name: iOS app + SnarwalCore (Xcode)
     runs-on: macos-15
     timeout-minutes: 45
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - name: Xcode version
@@ -68,6 +71,16 @@ jobs:
         with:
           name: screenshots
           path: screenshots/
+      - name: Publish screenshots to the ci-screenshots branch
+        if: github.ref == 'refs/heads/master'
+        run: |
+          cd screenshots
+          for f in *.png; do sips -Z 1000 "$f" >/dev/null; done
+          git init -q
+          git checkout -q -b ci-screenshots
+          git add *.png
+          git -c user.name="CI" -c user.email="ci@users.noreply.github.com" commit -qm "Screenshots for ${GITHUB_SHA::7}"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" ci-screenshots
 
   engine:
     name: Slicing engine (Kiri:Moto in Chromium)
