@@ -1,12 +1,14 @@
 # Snarwal 🐋
 
+[![CI](https://github.com/RainerZufall00/snorca/actions/workflows/ci.yml/badge.svg)](https://github.com/RainerZufall00/snorca/actions/workflows/ci.yml)
+
 Unofficial iOS/iPadOS app for the **Snapmaker U1**: slice models on your iPhone or iPad,
 send them to the printer and watch the print. Not affiliated with Snapmaker.
 
 Slicing runs fully on-device with the [Kiri:Moto](https://github.com/GridSpace/grid-apps) engine (MIT).
 
-**Status:** early development. Engine and core logic are tested; the SwiftUI app is written but
-has not been compiled in Xcode yet. See [docs/DESIGN.md](docs/DESIGN.md) (German) for the plan and
+**Status:** early development. Engine, core logic and the app build are checked in CI (including
+slicing inside WebKit on the iOS simulator); not yet tested against a real printer. See [docs/DESIGN.md](docs/DESIGN.md) (German) for the plan and
 [ios/README.md](ios/README.md) for building the app.
 
 ## Engine

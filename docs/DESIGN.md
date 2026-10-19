@@ -96,6 +96,7 @@ snarwal/
 - Den Code schreibt Claude. Gebaut wird lokal in **Xcode** auf dem Mac, mit eigenem Developer-Account (siehe `ios/README.md`).
 - Engine-Tests: `cd engine && npm install && npm run build && npm test` (22 Prüfungen).
 - Logik-Tests: `cd Packages/SnarwalCore && swift test` (20 Tests).
+- CI (GitHub Actions): alles oben plus App-Build, Engine-Test im iOS-Simulator und Screenshots.
 - Testplan am echten Drucker, stufenweise:
   1. Den erzeugten G-Code mit Orca-G-Code vergleichen (ohne Drucker).
   2. Testwürfel mit einem Kopf.
@@ -124,9 +125,10 @@ offiziellen U1-Profil von Snapmaker Orca (Stand 2026-01-28):
 1. ✅ **M1 – Engine-Prototyp**: Kiri slict headless mit U1-Profil.
 2. ✅ **M2 – Engine komplett**: mehrere Objekte, 3MF mit Orca-Kopfzuordnung, Orca-kompatible Metadaten.
 3. ✅ **M3 – SnarwalCore**: Platte, Materialien, Einstellungen, G-Code-Vorschau, Moonraker-Client (getestet).
-4. 🟡 **M4 – iOS-App**: alle Bildschirme geschrieben (Start, Platte mit 3D, Einstellungen, Vorschau,
-   Senden, Drucker mit Kamera/Steuerung, Verbinden). **Noch nicht in Xcode kompiliert.**
-5. **M5 – Erster Build & Test am Gerät**: Compiler-Fehler beheben, Engine im WKWebView prüfen.
+4. ✅ **M4 – iOS-App**: alle Bildschirme (Start, Platte mit 3D, Einstellungen, Vorschau, Senden,
+   Drucker mit Kamera/Steuerung, Verbinden), Thumbnails, englische Übersetzung.
+   Baut in der CI mit Xcode, die Engine läuft im iOS-Simulator (SnarwalTests).
+5. **M5 – Test am eigenen Gerät**: in Xcode auf iPhone/iPad installieren, mit dem U1 verbinden.
 6. **M6 – Testdrucke** nach Testplan (G-Code-Vergleich mit Orca → Würfel → 2 Köpfe → 4 Köpfe).
 7. **M7 – App Store**: Englische Übersetzung, Datenschutzangaben, Screenshots, Review.
 
@@ -138,5 +140,4 @@ offiziellen U1-Profil von Snapmaker Orca (Stand 2026-01-28):
 - Viele Kiri-Dateien tragen den Kopf „All Rights Reserved“, obwohl das Repo MIT-lizenziert ist.
   Vor dem App-Store-Release den Autor (Stewart Allen) um eine kurze Bestätigung bitten.
 - Thumbnail (PNG) im G-Code für Touchscreen und Moonraker.
-- Englische Übersetzung (String Catalog; Entwicklungssprache ist Deutsch).
 - Schicht-Vorschau in 3D statt Draufsicht.

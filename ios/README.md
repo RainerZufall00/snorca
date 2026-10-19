@@ -20,12 +20,29 @@
 
 Die Slicing-Engine liegt fertig gebaut in `ios/EngineBundle` – Node.js wird zum Bauen der App **nicht** gebraucht.
 
-## Wenn etwas nicht klappt
+## Automatische Prüfung (CI)
 
-Der App-Code wurde in einer Linux-Umgebung ohne Xcode geschrieben: Die Logik (`Packages/SnarwalCore`)
-und die Engine sind getestet, die SwiftUI-Oberfläche konnte aber nicht kompiliert werden.
-Rechne beim ersten Build mit ein paar Compiler-Fehlern. Kopier sie einfach (Xcode: Issue-Navigator,
-⌘5) in den Chat, dann behebe ich sie.
+Bei jedem Push baut GitHub Actions die App mit Xcode, lässt die Tests laufen und macht Screenshots:
+
+- **SnarwalCore-Tests** (macOS)
+- **App-Build + SnarwalTests im iOS-Simulator**: startet die echte Kiri-Engine in WebKit,
+  lädt ein STL und slict zwei Köpfe inklusive Thumbnail
+- **Engine-Tests** in Chromium (Linux)
+- **Screenshots** (iPhone und iPad) als Artefakt „screenshots“ am jeweiligen Lauf unter
+  *Actions* → *CI*
+
+Falls beim Bauen auf deinem Mac trotzdem etwas hakt, kopier die Fehlermeldung
+(Xcode: Issue-Navigator, ⌘5) in den Chat.
+
+## Debug-Startargumente
+
+Nur in Debug-Builds (Xcode: Product → Scheme → Edit Scheme → Run → Arguments):
+
+| Argument | Wirkung |
+|---|---|
+| `-SnarwalDemo` | Beispiel-Platte mit drei Objekten |
+| `-SnarwalAutoSlice` | slict nach dem Start automatisch |
+| `-SnarwalPrinterTab` | zeigt den Drucker-Tab mit simuliertem Druck |
 
 ## Aufbau
 
@@ -33,6 +50,8 @@ Rechne beim ersten Build mit ein paar Compiler-Fehlern. Kopier sie einfach (Xcod
 |---|---|
 | `Snarwal/` | SwiftUI-App (wird von Xcode automatisch eingelesen) |
 | `Snarwal/Engine/` | WKWebView mit der Kiri:Moto-Engine, lokaler Mini-Server auf 127.0.0.1 |
+| `SnarwalTests/` | Engine-Tests im Simulator |
+| `Snarwal/Localizable.xcstrings` | Englische Übersetzung (Quellsprache Deutsch) |
 | `Snarwal/Slice/` | Druckplatte (SceneKit), Einstellungen, Vorschau, Senden |
 | `Snarwal/Printer/` | Moonraker-Verbindung, Suche per mDNS, Kamera, Steuerung |
 | `EngineBundle/` | gebaute Engine (`cd engine && npm run bundle:ios`) |
