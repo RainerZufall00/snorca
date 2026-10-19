@@ -711,6 +711,16 @@
         }
       }
     },
+    "Nichts gefunden? Prüfe, ob der U1 eingeschaltet und im selben WLAN ist und ob Snarwal in den iOS-Einstellungen unter Datenschutz → Lokales Netzwerk erlaubt ist. Du kannst die IP-Adresse auch unten eintragen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing found? Check that the U1 is switched on and on the same Wi-Fi, and that Snarwal is allowed under Settings → Privacy → Local Network. You can also enter the IP address below."
+          }
+        }
+      }
+    },
     "Noch kein Drucker eingerichtet.": {
       "localizations": {
         "en": {

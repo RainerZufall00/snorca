@@ -20,6 +20,7 @@ struct ConnectView: View {
     @Environment(AppModel.self) private var model
     @State private var discovery = PrinterDiscovery()
     @State private var address = ""
+    @State private var searchedLong = false
 
     var body: some View {
         Form {
@@ -28,6 +29,11 @@ struct ConnectView: View {
                     HStack(spacing: 10) {
                         ProgressView()
                         Text("Suche nach Snapmaker U1 im WLAN …").foregroundStyle(.secondary)
+                    }
+                    if searchedLong {
+                        Text("Nichts gefunden? Prüfe, ob der U1 eingeschaltet und im selben WLAN ist und ob Snarwal in den iOS-Einstellungen unter Datenschutz → Lokales Netzwerk erlaubt ist. Du kannst die IP-Adresse auch unten eintragen.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
                     }
                 }
                 ForEach(discovery.printers) { found in
@@ -64,6 +70,10 @@ struct ConnectView: View {
         .navigationTitle("Drucker verbinden")
         .onAppear { discovery.start() }
         .onDisappear { discovery.stop() }
+        .task {
+            try? await Task.sleep(for: .seconds(8))
+            searchedLong = true
+        }
     }
 
     private func connect() {
