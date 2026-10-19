@@ -46,6 +46,9 @@ final class AppModel {
     let engine = SlicerEngine()
     let printer = PrinterConnection()
 
+    @ObservationIgnored private let store = PlateStore(folder: URL.applicationSupportDirectory.appendingPathComponent("Plate"))
+    @ObservationIgnored private var saveTask: Task<Void, Never>?
+
     static let modelTypes: [UTType] = [
         UTType("public.standard-tesselated-geometry-format") ?? UTType(filenameExtension: "stl", conformingTo: .data) ?? .data,
         UTType(filenameExtension: "3mf", conformingTo: .data) ?? .data,
@@ -55,6 +58,11 @@ final class AppModel {
         if let data = UserDefaults.standard.data(forKey: "sliceSettings"),
            let saved = try? JSONDecoder().decode(SliceSettings.self, from: data) {
             settings = saved
+        }
+        if let restored = store.load() {
+            plate = restored.plate
+            projectName = restored.projectName
+            selectedID = plate.objects.last?.id
         }
         #if DEBUG
         // launch arguments used by CI screenshots
@@ -219,8 +227,22 @@ final class AppModel {
     }
 
     private func invalidateSlice() {
+        savePlate()
         if case .slicing = sliceState { return }
         sliceState = .idle
+    }
+
+    /// Debounced, so dragging a slider does not rewrite the file each step.
+    private func savePlate() {
+        saveTask?.cancel()
+        let plate = self.plate, name = projectName, store = self.store
+        saveTask = Task {
+            try? await Task.sleep(for: .milliseconds(600))
+            guard !Task.isCancelled else { return }
+            await Task.detached(priority: .utility) {
+                try? store.save(plate: plate, projectName: name)
+            }.value
+        }
     }
 
     // MARK: slicing
