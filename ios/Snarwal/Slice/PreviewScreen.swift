@@ -99,7 +99,7 @@ struct PreviewScreen: View {
 }
 
 struct StatTile: View {
-    let title: String
+    let title: LocalizedStringKey
     let value: String
 
     var body: some View {

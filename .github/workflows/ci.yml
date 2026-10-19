@@ -10,7 +10,7 @@ jobs:
   ios:
     name: iOS app + SnarwalCore (Xcode)
     runs-on: macos-15
-    timeout-minutes: 45
+    timeout-minutes: 75
     permissions:
       contents: write
     steps:
@@ -36,7 +36,7 @@ jobs:
             test 2>&1 | grep -E "Test Case|Executed|error:|warning: .*/ios/|\*\* (TEST|BUILD)"
       - name: Screenshots
         if: always()
-        timeout-minutes: 15
+        timeout-minutes: 35
         run: |
           APP=build/Build/Products/Debug-iphonesimulator/Snarwal.app
           ID=io.github.rainerzufall00.snarwal
@@ -52,8 +52,9 @@ jobs:
           shoot() { # device name seconds args...
             local dev=$1 name=$2 wait=$3; shift 3
             echo "== $name"
-            limit 30 xcrun simctl terminate "$dev" $ID 2>/dev/null || true
-            limit 60 xcrun simctl launch "$dev" $ID "$@" || echo "launch failed"
+            limit 120 xcrun simctl terminate "$dev" $ID 2>/dev/null || true
+            # simctl is slow on hosted runners; launches can take minutes
+            limit 300 xcrun simctl launch "$dev" $ID "$@" || echo "launch failed"
             sleep "$wait"
             limit 60 xcrun simctl io "$dev" screenshot "screenshots/$name.png" || echo "screenshot failed"
           }
