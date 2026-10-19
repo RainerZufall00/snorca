@@ -108,6 +108,14 @@ public struct Mesh: Sendable {
 
     public var triangleCount: Int { vertices.count / 9 }
 
+    /// Box with its min corner at the origin (demo plates and tests).
+    public static func box(_ x: Float, _ y: Float, _ z: Float) -> Mesh {
+        let v: [[Float]] = [[0, 0, 0], [x, 0, 0], [x, y, 0], [0, y, 0], [0, 0, z], [x, 0, z], [x, y, z], [0, y, z]]
+        let faces = [[0, 2, 1], [0, 3, 2], [4, 5, 6], [4, 6, 7], [0, 1, 5], [0, 5, 4],
+                     [1, 2, 6], [1, 6, 5], [2, 3, 7], [2, 7, 6], [3, 0, 4], [3, 4, 7]]
+        return Mesh(vertices: faces.flatMap { $0.flatMap { v[$0] } })
+    }
+
     public func base64() -> String {
         vertices.withUnsafeBufferPointer { Data(buffer: $0) }.base64EncodedString()
     }

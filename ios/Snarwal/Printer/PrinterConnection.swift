@@ -23,6 +23,7 @@ final class PrinterConnection {
     @ObservationIgnored private var client: MoonrakerClient?
     @ObservationIgnored private var pollTask: Task<Void, Never>?
     @ObservationIgnored private var estimateFile = ""
+    @ObservationIgnored private var isDemo = false
 
     init() {
         host = UserDefaults.standard.string(forKey: "printerHost") ?? ""
@@ -64,7 +65,7 @@ final class PrinterConnection {
     // MARK: polling
 
     func startPolling() {
-        guard client != nil, pollTask == nil else { return }
+        guard client != nil, pollTask == nil, !isDemo else { return }
         pollTask = Task { [weak self] in
             while !Task.isCancelled {
                 await self?.refresh()
@@ -100,6 +101,38 @@ final class PrinterConnection {
     var remaining: TimeInterval? {
         status?.remaining(estimatedTotal: estimatedTotal)
     }
+
+    #if DEBUG
+    /// Fake printing state for screenshots (no network).
+    func loadDemo() {
+        stopPolling()
+        isDemo = true
+        client = try? MoonrakerClient(host: "U1.local")
+        host = "U1.local"
+        link = .online
+        var status = PrinterStatus()
+        status.state = .printing
+        status.filename = "Werkstatt-Set.gcode"
+        status.progress = 0.37
+        status.printDuration = 2400
+        status.currentLayer = 84
+        status.totalLayers = 240
+        status.activeTool = 1
+        status.nozzles = [HeaterState(temperature: 151, target: 150), HeaterState(temperature: 219.6, target: 220),
+                          HeaterState(temperature: 22, target: 0), HeaterState(temperature: 22, target: 0)]
+        status.bed = HeaterState(temperature: 60.1, target: 60)
+        status.partFan = 0.8
+        status.lightOn = true
+        status.filaments = [
+            HeadFilament(tool: 0, material: .pla, colorHex: "#EDEDE8", vendor: "Snapmaker", fromPrinter: true),
+            HeadFilament(tool: 1, material: .pla, colorHex: "#2A2A2A", vendor: "Snapmaker", fromPrinter: true),
+            HeadFilament(tool: 2, material: .pla, colorHex: "#E8792B", vendor: "Snapmaker", fromPrinter: true),
+            HeadFilament(tool: 3, material: .petg, colorHex: "#2F6FD6", fromPrinter: true, loaded: false),
+        ]
+        self.status = status
+        estimatedTotal = 6400
+    }
+    #endif
 
     // MARK: commands
 

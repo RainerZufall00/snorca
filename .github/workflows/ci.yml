@@ -17,17 +17,48 @@ jobs:
         run: swift test --package-path Packages/SnarwalCore
       - name: Build and test the app in the iOS simulator
         run: |
-          # first available iPhone simulator
-          UDID=$(xcrun simctl list devices available -j | python3 -c "import json,sys; d=json.load(sys.stdin)['devices']; print(next(x['udid'] for k in sorted(d, reverse=True) if 'iOS' in k for x in d[k] if 'iPhone' in x['name']))")
-          echo "Simulator: $UDID"
+          set -o pipefail
+          # newest available iPhone and iPad simulators
+          pick() { xcrun simctl list devices available -j | python3 -c "import json,sys; d=json.load(sys.stdin)['devices']; print(next(x['udid'] for k in sorted(d, reverse=True) if 'iOS' in k for x in d[k] if x['name'].startswith('$1')))"; }
+          IPHONE=$(pick iPhone); IPAD=$(pick iPad)
+          echo "IPHONE=$IPHONE" >> "$GITHUB_ENV"; echo "IPAD=$IPAD" >> "$GITHUB_ENV"
           xcodebuild \
             -project ios/Snarwal.xcodeproj \
             -scheme Snarwal \
-            -destination "id=$UDID" \
+            -destination "id=$IPHONE" \
+            -derivedDataPath build \
             -configuration Debug \
             CODE_SIGNING_ALLOWED=NO \
-            -quiet \
-            test
+            test 2>&1 | grep -E "Test Case|Executed|error:|warning: .*/ios/|\*\* (TEST|BUILD)"
+      - name: Screenshots
+        if: always()
+        run: |
+          APP=build/Build/Products/Debug-iphonesimulator/Snarwal.app
+          ID=io.github.rainerzufall00.snarwal
+          mkdir -p screenshots
+          shoot() { # device name args...
+            local dev=$1 name=$2; shift 2
+            xcrun simctl terminate "$dev" $ID 2>/dev/null || true
+            xcrun simctl launch "$dev" $ID "$@"
+            sleep 12
+            xcrun simctl io "$dev" screenshot "screenshots/$name.png"
+          }
+          for dev in "$IPHONE" "$IPAD"; do
+            xcrun simctl boot "$dev" 2>/dev/null || true
+            xcrun simctl bootstatus "$dev" -b
+            xcrun simctl install "$dev" "$APP"
+          done
+          shoot "$IPHONE" iphone-1-start
+          shoot "$IPHONE" iphone-2-plate -SnarwalDemo
+          shoot "$IPHONE" iphone-3-preview -SnarwalDemo -SnarwalAutoSlice
+          shoot "$IPHONE" iphone-4-printer -SnarwalPrinterTab
+          shoot "$IPAD" ipad-1-plate -SnarwalDemo
+          shoot "$IPAD" ipad-2-printer -SnarwalPrinterTab
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshots
+          path: screenshots/
 
   engine:
     name: Slicing engine (Kiri:Moto in Chromium)

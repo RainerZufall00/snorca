@@ -56,7 +56,44 @@ final class AppModel {
            let saved = try? JSONDecoder().decode(SliceSettings.self, from: data) {
             settings = saved
         }
+        #if DEBUG
+        // launch arguments used by CI screenshots
+        let arguments = ProcessInfo.processInfo.arguments
+        if arguments.contains("-SnarwalDemo") {
+            loadDemo()
+        }
+        if arguments.contains("-SnarwalAutoSlice") {
+            Task {
+                while engine.state == .loading {
+                    try? await Task.sleep(for: .milliseconds(500))
+                }
+                await slice()
+            }
+        }
+        if arguments.contains("-SnarwalPrinterTab") {
+            printer.loadDemo()
+            tab = .printer
+        }
+        #endif
     }
+
+    #if DEBUG
+    func loadDemo() {
+        projectName = "Werkstatt-Set"
+        plate = Plate(objects: [
+            PlateObject(name: "Halterung", mesh: .box(60, 40, 48), tool: 2, position: (95, 120)),
+            PlateObject(name: "Deckel", mesh: .box(50, 50, 12), tool: 0, position: (175, 115)),
+            PlateObject(name: "Clip", mesh: .box(30, 20, 20), tool: 1, position: (135, 185)),
+        ])
+        manualHeads = [
+            HeadFilament(tool: 0, material: .pla, colorHex: "#EDEDE8"),
+            HeadFilament(tool: 1, material: .pla, colorHex: "#2A2A2A"),
+            HeadFilament(tool: 2, material: .pla, colorHex: "#E8792B"),
+            HeadFilament(tool: 3, material: .petg, colorHex: "#2F6FD6"),
+        ]
+        selectedID = plate.objects.first?.id
+    }
+    #endif
 
     private func saveSettings() {
         if let data = try? JSONEncoder().encode(settings) {
