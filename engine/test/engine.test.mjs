@@ -131,6 +131,14 @@ try {
     const mb = extrusionBox(multi.gcode);
     check('objects stay at their X/Y positions', mb.minX > 28 && mb.minX < 33 && mb.maxX > 228 && mb.maxX < 232 && mb.minY > 28 && mb.maxY > 218 && mb.maxY < 222, JSON.stringify(mb));
     check('T commands only select real heads', changes.every(t => /^T[0-3]$/.test(t)), changes.join(','));
+    check('filament is counted per head', multi.toolsMM[0] > 100 && multi.toolsMM[1] > 100 && multi.toolsMM[2] === 0, JSON.stringify(multi.toolsMM));
+
+    // 2b. Moonraker (Snapmaker fork) only parses Prusa/Orca-style metadata
+    const mg = multi.gcode;
+    check('header identifies an Orca-format file', /OrcaSlicer\s(.*)\son/.test(mg.slice(0, 4096)));
+    check('footer has print time for Moonraker', /; estimated printing time \(normal mode\) = (\d+h )?\d+m \d+s/.test(mg.slice(-4096)));
+    check('footer has per-head filament', /; filament used \[g\] = [\d.]+,[\d.]+,0\.00,0\.00/.test(mg));
+    check('layer heights are tagged like Orca', /;BEFORE_LAYER_CHANGE\n;0\.2/.test(mg));
 
     // 3. Orca 3MF keeps names, positions and extruder assignment
     const three = await page.evaluate(async data => {

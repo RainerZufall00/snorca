@@ -9,11 +9,12 @@
 //       For 3MF the build transforms are applied, so objects keep the
 //       positions they had on the slicer plate. tool is 0-based or null.
 //
-//   await snarwal.slice({ objects, process })
+//   await snarwal.slice({ objects, process, filaments })
 //     objects: [{ vertices, tool }] with vertices in bed coordinates
 //       (origin front-left, Z up), already rotated/scaled by the app
 //     process: Kiri process overrides (temperatures, layer height, ...)
-//     → { gcode, layers, printTimeS, filamentMM }
+//     filaments: per tool { type, color '#RRGGBB', density } for metadata
+//     → { gcode, layers, printTimeS, filamentMM, toolsMM, toolsG }
 //
 // Progress is posted to window.webkit.messageHandlers.snarwal when present.
 
@@ -173,7 +174,7 @@ function call(fn, ...args) {
     });
 }
 
-export async function slice({ objects, process = {} } = {}) {
+export async function slice({ objects, process = {}, filaments = [] } = {}) {
     if (!objects?.length) throw new Error('Nothing to slice');
     const widgets = objects.map(object => {
         const floats = toFloats(object.vertices);
@@ -225,9 +226,63 @@ export async function slice({ objects, process = {} } = {}) {
     }, resolve));
     post({ progress: 1, phase: 'done' });
 
-    const gcode = output.join('\n');
+    let gcode = output.join('\n').replace('SNARWAL_DATE', new Date().toISOString().slice(0, 19).replace('T', ' '));
     checkBounds(gcode);
-    return { gcode, ...stats(gcode) };
+    const info = stats(gcode);
+    const tools = toolUsage(gcode, filaments);
+    gcode += '\n' + orcaFooter({ ...info, tools, filaments, process: settings.process, device: settings.device }) + '\n';
+    return { gcode, ...info, toolsMM: tools.map(t => t.mm), toolsG: tools.map(t => t.g) };
+}
+
+const defaultFilament = { type: 'PLA', color: '#FFFFFF', density: 1.24 };
+
+// net extruded length per tool; the profile switches to relative extrusion (M83)
+export function toolUsage(gcode, filaments = []) {
+    const mm = new Array(device.extruders.length).fill(0);
+    let tool = 0;
+    for (const line of gcode.split('\n')) {
+        const t = /^T(\d)\b/.exec(line);
+        if (t) {
+            tool = Number(t[1]);
+            continue;
+        }
+        if (line.startsWith('G1') || line.startsWith('G0')) {
+            const e = / E(-?[\d.]+)/.exec(line.split(';')[0]);
+            if (e && tool < mm.length) mm[tool] += Number(e[1]);
+        }
+    }
+    return mm.map((len, i) => {
+        const { diameter = 1.75, density = defaultFilament.density } = { ...defaultFilament, ...filaments[i] };
+        const length = Math.max(0, len);
+        const grams = Math.PI * (diameter / 2) ** 2 * length / 1000 * density;
+        return { mm: Math.round(length * 100) / 100, g: Math.round(grams * 100) / 100 };
+    });
+}
+
+function duration(seconds) {
+    const s = Math.round(seconds ?? 0);
+    const d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60);
+    return `${d ? d + 'd ' : ''}${h ? h + 'h ' : ''}${m}m ${s % 60}s`;
+}
+
+// Prusa/Orca style config footer: Moonraker reads it from the last MiB of the file
+function orcaFooter({ printTimeS, layers, tools, filaments, process, device }) {
+    const fil = tools.map((_, i) => ({ ...defaultFilament, ...filaments[i] }));
+    const total = tools.reduce((sum, t) => sum + t.g, 0);
+    return [
+        `; estimated printing time (normal mode) = ${duration(printTimeS)}`,
+        `; total layers count = ${layers ?? 0}`,
+        `; filament used [mm] = ${tools.map(t => t.mm.toFixed(2)).join(',')}`,
+        `; filament used [g] = ${tools.map(t => t.g.toFixed(2)).join(',')}`,
+        `; total filament used [g] = ${total.toFixed(2)}`,
+        `; filament_type = ${fil.map(f => f.type).join(';')}`,
+        `; filament_colour = ${fil.map(f => f.color).join(';')}`,
+        `; nozzle_diameter = ${device.extruders.map(e => e.extNozzle).join(',')}`,
+        `; layer_height = ${process.sliceHeight}`,
+        `; first_layer_height = ${process.firstSliceHeight || process.sliceHeight}`,
+        `; first_layer_temperature = ${process.firstLayerNozzleTemp || process.outputTemp}`,
+        `; first_layer_bed_temperature = ${process.firstLayerBedTemp || process.outputBedTemp}`,
+    ].join('\n');
 }
 
 // Refuse G-code that would move outside the printable area. Start/end macros
