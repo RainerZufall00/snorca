@@ -91,7 +91,7 @@ jobs:
           name: screenshots
           path: screenshots/
       - name: Publish screenshots to the ci-screenshots branch
-        if: github.ref == 'refs/heads/master'
+        if: always() && github.ref == 'refs/heads/master'
         run: |
           cd screenshots
           for f in *.png; do sips -Z 1000 "$f" >/dev/null; done

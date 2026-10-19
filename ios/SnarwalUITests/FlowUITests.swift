@@ -23,6 +23,20 @@ final class FlowUITests: XCTestCase {
         }
     }
 
+    /// Waits until some element with `identifier` shows one of `labels`;
+    /// reports what it saw instead otherwise.
+    private func waitForLabel(_ identifier: String, in app: XCUIApplication, oneOf labels: [String], timeout: TimeInterval) {
+        let query = app.descendants(matching: .any).matching(identifier: identifier)
+        let deadline = Date().addingTimeInterval(timeout)
+        var seen: [String] = []
+        while Date() < deadline {
+            seen = query.allElementsBoundByIndex.map { $0.label }
+            if seen.contains(where: labels.contains) { return }
+            Thread.sleep(forTimeInterval: 1)
+        }
+        XCTFail("\(identifier) shows \(seen), expected one of \(labels)")
+    }
+
     private func snapshot(_ name: String, _ app: XCUIApplication) {
         let attachment = XCTAttachment(screenshot: app.screenshot())
         attachment.name = name
@@ -65,10 +79,8 @@ final class FlowUITests: XCTestCase {
         print.tap()
 
         // 5. the app switches to the printer tab and shows the running print
-        let chip = app.descendants(matching: .any)["statusChip"]
-        XCTAssertTrue(chip.waitForExistence(timeout: 60))
-        let printing = expectation(for: NSPredicate(format: "label == 'Druckt'"), evaluatedWith: chip)
-        wait(for: [printing], timeout: 60)
+        snapshot("Nach Drucken", app)
+        waitForLabel("statusChip", in: app, oneOf: ["Druckt"], timeout: 60)
         snapshot("Drucker", app)
     }
 
@@ -81,10 +93,8 @@ final class FlowUITests: XCTestCase {
         let tab = app.buttons["Drucker"].firstMatch
         XCTAssertTrue(tab.waitForExistence(timeout: 60))
         tab.tap()
-        let chip = app.descendants(matching: .any)["statusChip"]
-        XCTAssertTrue(chip.waitForExistence(timeout: 60))
-        let ready = expectation(for: NSPredicate(format: "label == 'Bereit'"), evaluatedWith: chip)
-        wait(for: [ready], timeout: 60)
+        snapshot("Drucker-Tab", app)
+        waitForLabel("statusChip", in: app, oneOf: ["Bereit"], timeout: 60)
         let temps = app.staticTexts.matching(NSPredicate(format: "label CONTAINS[c] 'temperaturen'")).firstMatch
         XCTAssertTrue(temps.waitForExistence(timeout: 30))
         snapshot("Drucker bereit", app)
