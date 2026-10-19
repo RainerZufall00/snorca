@@ -134,16 +134,20 @@ final class SlicerEngine {
 
     func slice(plate: Plate, process: [String: KiriValue], heads: [HeadFilament]) async throws -> Output {
         progress = 0
+        let thumbnails: [[String: Any]] = PlateThumbnail.render(plate: plate, heads: heads).map {
+            ["width": $0.width, "height": $0.height, "png": $0.png.base64EncodedString()]
+        }
         let objects: [[String: Any]] = plate.objects.map {
             ["vertices": $0.placedMesh().base64(), "tool": $0.tool]
         }
         let filaments: [[String: Any]] = heads.map {
             ["type": $0.material.rawValue, "color": $0.colorHex, "density": $0.material.defaults.density]
         }
-        let result = try await call("return await snarwal.slice({ objects, process, filaments })", arguments: [
+        let result = try await call("return await snarwal.slice({ objects, process, filaments, thumbnails })", arguments: [
             "objects": objects,
             "process": process.mapValues(\.foundationValue),
             "filaments": filaments,
+            "thumbnails": thumbnails,
         ])
         guard let dict = result as? [String: Any], let gcode = dict["gcode"] as? String else {
             throw EngineError.unexpectedResult

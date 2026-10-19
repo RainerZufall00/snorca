@@ -14,6 +14,7 @@
 //       (origin front-left, Z up), already rotated/scaled by the app
 //     process: Kiri process overrides (temperatures, layer height, ...)
 //     filaments: per tool { type, color '#RRGGBB', density } for metadata
+//     thumbnails: [{ width, height, png (base64) }] for the printer screen
 //     → { gcode, layers, printTimeS, filamentMM, toolsMM, toolsG }
 //
 // Progress is posted to window.webkit.messageHandlers.snarwal when present.
@@ -174,7 +175,7 @@ function call(fn, ...args) {
     });
 }
 
-export async function slice({ objects, process = {}, filaments = [] } = {}) {
+export async function slice({ objects, process = {}, filaments = [], thumbnails = [] } = {}) {
     if (!objects?.length) throw new Error('Nothing to slice');
     const widgets = objects.map(object => {
         const floats = toFloats(object.vertices);
@@ -230,8 +231,29 @@ export async function slice({ objects, process = {}, filaments = [] } = {}) {
     checkBounds(gcode);
     const info = stats(gcode);
     const tools = toolUsage(gcode, filaments);
+    gcode = insertThumbnails(gcode, thumbnails);
     gcode += '\n' + orcaFooter({ ...info, tools, filaments, process: settings.process, device: settings.device }) + '\n';
     return { gcode, ...info, toolsMM: tools.map(t => t.mm), toolsG: tools.map(t => t.g) };
+}
+
+// PNG previews in the Prusa/Orca comment format, placed right after the
+// header block where Moonraker and the U1 touchscreen look for them.
+export function insertThumbnails(gcode, thumbnails = []) {
+    const blocks = thumbnails
+        .filter(t => t && t.png && t.width && t.height)
+        .map(({ width, height, png }) => {
+            const lines = [`; thumbnail begin ${width}x${height} ${png.length}`];
+            for (let i = 0; i < png.length; i += 78) lines.push(`; ${png.slice(i, i + 78)}`);
+            lines.push('; thumbnail end');
+            return lines.join('\n');
+        });
+    if (!blocks.length) return gcode;
+    const block = ['; THUMBNAIL_BLOCK_START', ...blocks, '; THUMBNAIL_BLOCK_END'].join('\n');
+    const marker = '; HEADER_BLOCK_END';
+    const at = gcode.indexOf(marker);
+    return at < 0
+        ? block + '\n' + gcode
+        : gcode.slice(0, at + marker.length) + '\n' + block + gcode.slice(at + marker.length);
 }
 
 const defaultFilament = { type: 'PLA', color: '#FFFFFF', density: 1.24 };

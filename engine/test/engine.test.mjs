@@ -133,6 +133,14 @@ try {
     check('T commands only select real heads', changes.every(t => /^T[0-3]$/.test(t)), changes.join(','));
     check('filament is counted per head', multi.toolsMM[0] > 100 && multi.toolsMM[1] > 100 && multi.toolsMM[2] === 0, JSON.stringify(multi.toolsMM));
 
+    // 2a. thumbnails land after the header block in Prusa format
+    const png = Buffer.from('89504E470D0A1A0A0000000D49484452000000010000000108060000001F15C4890000000D4944415478DA63F8FFFF3F0005FE02FEA7D7A3C20000000049454E44AE426082', 'hex').toString('base64');
+    const withThumb = await page.evaluate(([v, png]) => self.snarwal.slice({ objects: [{ vertices: v, tool: 0 }], thumbnails: [{ width: 1, height: 1, png }] }),
+        [boxFloats(10, 10, 2, 100, 100), png]);
+    const head = withThumb.gcode.slice(0, 2000);
+    await fs.writeFile(path.join(out, 'thumb.gcode'), withThumb.gcode);
+    check('thumbnail block follows the header', /; HEADER_BLOCK_END\n; THUMBNAIL_BLOCK_START\n; thumbnail begin 1x1 \d+\n(; [A-Za-z0-9+/=]+\n)+; thumbnail end/.test(head));
+
     // 2b. Moonraker (Snapmaker fork) only parses Prusa/Orca-style metadata
     const mg = multi.gcode;
     check('header identifies an Orca-format file', /OrcaSlicer\s(.*)\son/.test(mg.slice(0, 4096)));
