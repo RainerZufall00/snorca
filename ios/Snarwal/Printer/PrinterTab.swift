@@ -152,7 +152,7 @@ struct PrinterScreen: View {
     }
 
     private func statusChip(_ status: PrinterStatus?) -> some View {
-        let (text, color): (String, Color) = switch (model.printer.link, status?.state) {
+        let (text, color): (LocalizedStringKey, Color) = switch (model.printer.link, status?.state) {
         case (.offline, _): ("Offline", .red)
         case (.connecting, _), (_, nil): ("Verbinde …", .secondary)
         case (_, .printing?): ("Druckt", .blue)
@@ -220,7 +220,7 @@ struct PrinterScreen: View {
 
     private func idleCard(_ status: PrinterStatus?) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(status?.state == .complete ? "Druck fertig" : "Kein aktiver Druck").font(.headline)
+            Text(status?.state == .complete ? "Druck fertig" as LocalizedStringKey : "Kein aktiver Druck").font(.headline)
             Text("Slice ein Modell und schick es an den U1 – hier siehst du dann Fortschritt, Kamera und Steuerung.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
@@ -247,9 +247,9 @@ struct PrinterScreen: View {
                 .padding(.vertical, 8)
             ForEach(0..<PrinterSpec.toolCount, id: \.self) { tool in
                 let head = status.filaments.first { $0.tool == tool } ?? HeadFilament(tool: tool)
-                heaterRow(dot: head.color, title: head.loaded ? head.title : "\(head.label) · leer", heater: status.nozzles[tool])
+                heaterRow(dot: head.color, title: head.loaded ? head.title : String(localized: "\(head.label) · leer"), heater: status.nozzles[tool])
             }
-            heaterRow(dot: .gray, title: "Bett", heater: status.bed)
+            heaterRow(dot: .gray, title: String(localized: "Bett"), heater: status.bed)
             VStack(alignment: .leading) {
                 HStack {
                     Text("Bauteillüfter")
@@ -281,7 +281,7 @@ struct PrinterScreen: View {
             Text(title).font(.subheadline)
             Spacer()
             Text(Format.temperature(heater.temperature)).bold().monospacedDigit()
-            Text("/ " + (heater.target > 0 ? Format.temperature(heater.target) : "aus"))
+            Text(verbatim: "/ " + (heater.target > 0 ? Format.temperature(heater.target) : String(localized: "aus")))
                 .foregroundStyle(.secondary)
                 .monospacedDigit()
         }
@@ -290,7 +290,7 @@ struct PrinterScreen: View {
 }
 
 private struct ControlButton: View {
-    let title: String
+    let title: LocalizedStringKey
     let icon: String
     var tint: Color = .primary
     let action: () -> Void

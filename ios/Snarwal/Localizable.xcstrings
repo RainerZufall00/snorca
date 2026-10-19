@@ -1,0 +1,1106 @@
+{
+  "sourceLanguage": "de",
+  "strings": {
+    "%@ · leer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · empty"
+          }
+        }
+      }
+    },
+    "%@: Kopf wählen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: choose head"
+          }
+        }
+      }
+    },
+    "Abbrechen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        }
+      }
+    },
+    "Aktion fehlgeschlagen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Action failed"
+          }
+        }
+      }
+    },
+    "Aktiver Kopf: ": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Active head: "
+          }
+        }
+      }
+    },
+    "An U1 senden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send to U1"
+          }
+        }
+      }
+    },
+    "Anderen Drucker wählen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose another printer"
+          }
+        }
+      }
+    },
+    "Anordnen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arrange"
+          }
+        }
+      }
+    },
+    "Auf den U1 hochgeladen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uploaded to the U1"
+          }
+        }
+      }
+    },
+    "Bauteillüfter": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Part cooling fan"
+          }
+        }
+      }
+    },
+    "Bereit": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ready"
+          }
+        }
+      }
+    },
+    "Bett": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bed"
+          }
+        }
+      }
+    },
+    "Brim": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brim"
+          }
+        }
+      }
+    },
+    "Das Modell ist mehrfarbig bemalt. Bemalung wird noch nicht unterstützt – es wird einfarbig gedruckt.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The model is painted in several colours. Painting is not supported yet – it will print in one colour."
+          }
+        }
+      }
+    },
+    "Datei": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "File"
+          }
+        }
+      }
+    },
+    "Der Druck kann danach nicht fortgesetzt werden.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The print cannot be resumed afterwards."
+          }
+        }
+      }
+    },
+    "Der U1 druckt gerade. Du kannst die Datei hochladen und später starten.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The U1 is printing. You can upload the file and start it later."
+          }
+        }
+      }
+    },
+    "Die IP steht am Touchscreen des U1 unter Einstellungen → WLAN. Für unterwegs kannst du die Tailscale-Adresse eintragen.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The IP is shown on the U1 touchscreen under Settings → Wi-Fi. For remote access, enter your Tailscale address."
+          }
+        }
+      }
+    },
+    "Die Objekte lagen außerhalb des U1-Betts und wurden neu angeordnet.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The objects were outside the U1 bed and have been rearranged."
+          }
+        }
+      }
+    },
+    "Drehen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rotate"
+          }
+        }
+      }
+    },
+    "Druck abbrechen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel print"
+          }
+        }
+      }
+    },
+    "Druck fertig": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Print finished"
+          }
+        }
+      }
+    },
+    "Druck wirklich abbrechen?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Really cancel the print?"
+          }
+        }
+      }
+    },
+    "Drucken": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Print"
+          }
+        }
+      }
+    },
+    "Drucker": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Printer"
+          }
+        }
+      }
+    },
+    "Drucker verbinden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connect printer"
+          }
+        }
+      }
+    },
+    "Druckt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Printing"
+          }
+        }
+      }
+    },
+    "Druckzeit": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Print time"
+          }
+        }
+      }
+    },
+    "Duplizieren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Duplicate"
+          }
+        }
+      }
+    },
+    "Einstellungen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings"
+          }
+        }
+      }
+    },
+    "Entfernen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove"
+          }
+        }
+      }
+    },
+    "Fehler": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Error"
+          }
+        }
+      }
+    },
+    "Fein · 0,12": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fine · 0.12"
+          }
+        }
+      }
+    },
+    "Fein · 0,12 mm": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fine · 0.12 mm"
+          }
+        }
+      }
+    },
+    "Fertig": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
+          }
+        }
+      }
+    },
+    "Filament": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filament"
+          }
+        }
+      }
+    },
+    "Filament im Drucker": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filament in the printer"
+          }
+        }
+      }
+    },
+    "Filament pro Kopf": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filament per head"
+          }
+        }
+      }
+    },
+    "Flachlegen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lay flat"
+          }
+        }
+      }
+    },
+    "Fortsetzen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resume"
+          }
+        }
+      }
+    },
+    "G-Code teilen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share G-code"
+          }
+        }
+      }
+    },
+    "Gemischte Materialien (%@) werden in Version 1 noch nicht unterstützt. Bitte nur Köpfe mit gleichem Material verwenden.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mixed materials (%@) are not supported in version 1 yet. Please only use heads with the same material."
+          }
+        }
+      }
+    },
+    "IP-Adresse oder Hostname": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "IP address or host name"
+          }
+        }
+      }
+    },
+    "Im Netzwerk gefunden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Found on the network"
+          }
+        }
+      }
+    },
+    "Import fehlgeschlagen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import failed"
+          }
+        }
+      }
+    },
+    "Infill": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Infill"
+          }
+        }
+      }
+    },
+    "Infill %lld %% · Stützen %@ · Brim %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Infill %lld %% · Supports %@ · Brim %@"
+          }
+        }
+      }
+    },
+    "Jetzt drucken?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Print now?"
+          }
+        }
+      }
+    },
+    "Kein Drucker verbunden. Richte den U1 im Tab „Drucker“ ein.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No printer connected. Set up the U1 in the Printer tab."
+          }
+        }
+      }
+    },
+    "Kein Kamerabild": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No camera image"
+          }
+        }
+      }
+    },
+    "Kein aktiver Druck": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No active print"
+          }
+        }
+      }
+    },
+    "Keine Vorschau": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No preview"
+          }
+        }
+      }
+    },
+    "Köpfe": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heads"
+          }
+        }
+      }
+    },
+    "Letzte Vorschau öffnen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open last preview"
+          }
+        }
+      }
+    },
+    "Licht an": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Light on"
+          }
+        }
+      }
+    },
+    "Licht aus": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Light off"
+          }
+        }
+      }
+    },
+    "Licht ausschalten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turn light off"
+          }
+        }
+      }
+    },
+    "Licht einschalten": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turn light on"
+          }
+        }
+      }
+    },
+    "Manuell": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Manual"
+          }
+        }
+      }
+    },
+    "Material": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Material"
+          }
+        }
+      }
+    },
+    "Mehr": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "More"
+          }
+        }
+      }
+    },
+    "Modell wird geladen …": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loading model …"
+          }
+        }
+      }
+    },
+    "Modell öffnen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open model"
+          }
+        }
+      }
+    },
+    "Nicht alle Objekte passen auf das Druckbett. Skaliere sie oder entferne welche.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not all objects fit on the build plate. Scale them down or remove some."
+          }
+        }
+      }
+    },
+    "Normal · 0,20": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Normal · 0.20"
+          }
+        }
+      }
+    },
+    "Normal · 0,20 mm": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Normal · 0.20 mm"
+          }
+        }
+      }
+    },
+    "Nur hochladen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upload only"
+          }
+        }
+      }
+    },
+    "OK": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
+          }
+        }
+      }
+    },
+    "Objekt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Object"
+          }
+        }
+      }
+    },
+    "Objekt hinzufügen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add object"
+          }
+        }
+      }
+    },
+    "Offline": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Offline"
+          }
+        }
+      }
+    },
+    "Pause": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pause"
+          }
+        }
+      }
+    },
+    "Pausiert": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paused"
+          }
+        }
+      }
+    },
+    "Platte leeren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear plate"
+          }
+        }
+      }
+    },
+    "Qualität": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quality"
+          }
+        }
+      }
+    },
+    "STL oder 3MF öffnen – oder über „Teilen“ aus Safari, Printables oder MakerWorld schicken.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open an STL or 3MF – or send one via Share from Safari, Printables or MakerWorld."
+          }
+        }
+      }
+    },
+    "Schicht": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Layer"
+          }
+        }
+      }
+    },
+    "Schicht %lld / %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Layer %lld / %lld"
+          }
+        }
+      }
+    },
+    "Schichtansicht von oben": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Layer view from above"
+          }
+        }
+      }
+    },
+    "Schichthöhe": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Layer height"
+          }
+        }
+      }
+    },
+    "Schnell · 0,28": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fast · 0.28"
+          }
+        }
+      }
+    },
+    "Schnell · 0,28 mm": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fast · 0.28 mm"
+          }
+        }
+      }
+    },
+    "Senden fehlgeschlagen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sending failed"
+          }
+        }
+      }
+    },
+    "Skalieren": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scale"
+          }
+        }
+      }
+    },
+    "Slice ein Modell und schick es an den U1 – hier siehst du dann Fortschritt, Kamera und Steuerung.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slice a model and send it to the U1 – progress, camera and controls will show up here."
+          }
+        }
+      }
+    },
+    "Slice zuerst die Druckplatte.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slice the plate first."
+          }
+        }
+      }
+    },
+    "Slicen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slice"
+          }
+        }
+      }
+    },
+    "Slicing-Engine startet …": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starting slicing engine …"
+          }
+        }
+      }
+    },
+    "Snapmaker U1": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snapmaker U1"
+          }
+        }
+      }
+    },
+    "Snarwal": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snarwal"
+          }
+        }
+      }
+    },
+    "Sobald ein Drucker verbunden ist, liest Snarwal das geladene Filament automatisch aus.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Once a printer is connected, Snarwal reads the loaded filament automatically."
+          }
+        }
+      }
+    },
+    "Stützen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supports"
+          }
+        }
+      }
+    },
+    "Suche nach Snapmaker U1 im WLAN …": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Looking for a Snapmaker U1 on Wi-Fi …"
+          }
+        }
+      }
+    },
+    "Temperaturen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temperatures"
+          }
+        }
+      }
+    },
+    "Verbinde …": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connecting …"
+          }
+        }
+      }
+    },
+    "Verbinden": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connect"
+          }
+        }
+      }
+    },
+    "Vom U1 gelesen (RFID oder Touchscreen). Temperaturen kommen aus den Snarwal-Standardwerten des Materials.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Read from the U1 (RFID or touchscreen). Temperatures come from Snarwal's material defaults."
+          }
+        }
+      }
+    },
+    "Vorschau": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preview"
+          }
+        }
+      }
+    },
+    "Was druckst du heute?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What are you printing today?"
+          }
+        }
+      }
+    },
+    "Weiterdrucken": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keep printing"
+          }
+        }
+      }
+    },
+    "an": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "on"
+          }
+        }
+      }
+    },
+    "aus": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "off"
+          }
+        }
+      }
+    },
+    "geladen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "loaded"
+          }
+        }
+      }
+    },
+    "im Drucker: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "in printer: %@"
+          }
+        }
+      }
+    },
+    "leer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "empty"
+          }
+        }
+      }
+    },
+    "noch %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ left"
+          }
+        }
+      }
+    },
+    "unbekannt": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "unknown"
+          }
+        }
+      }
+    },
+    "„%@“ ist bemalt; die Bemalung wird ignoriert.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“%@” is painted; the painting is ignored."
+          }
+        }
+      }
+    },
+    "„%@“ ist höher als 270 mm.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“%@” is taller than 270 mm."
+          }
+        }
+      }
+    },
+    "„%@“ liegt außerhalb des Druckbetts.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“%@” is outside the build plate."
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

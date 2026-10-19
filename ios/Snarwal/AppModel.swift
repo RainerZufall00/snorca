@@ -96,7 +96,7 @@ final class AppModel {
             let loaded = try await engine.loadModel(name: url.lastPathComponent, data: data)
             var notes: [String] = []
             if loaded.contains(where: \.painted) {
-                notes.append("Das Modell ist mehrfarbig bemalt. Bemalung wird noch nicht unterstützt – es wird einfarbig gedruckt.")
+                notes.append(String(localized: "Das Modell ist mehrfarbig bemalt. Bemalung wird noch nicht unterstützt – es wird einfarbig gedruckt."))
             }
             let added = loaded.map { item in
                 PlateObject(name: item.name, mesh: item.mesh, tool: min(item.tool ?? 0, PrinterSpec.toolCount - 1))
@@ -109,9 +109,9 @@ final class AppModel {
             plate.objects.append(contentsOf: added)
             if isSTL || !plate.boundsIssues().isEmpty {
                 if !plate.arrange() {
-                    notes.append("Nicht alle Objekte passen auf das Druckbett. Skaliere sie oder entferne welche.")
+                    notes.append(String(localized: "Nicht alle Objekte passen auf das Druckbett. Skaliere sie oder entferne welche."))
                 } else if !isSTL {
-                    notes.append("Die Objekte lagen außerhalb des U1-Betts und wurden neu angeordnet.")
+                    notes.append(String(localized: "Die Objekte lagen außerhalb des U1-Betts und wurden neu angeordnet."))
                 }
             }
             selectedID = plate.objects.last?.id

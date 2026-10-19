@@ -69,13 +69,13 @@ extension PlateIssue {
     var message: String {
         switch self {
         case .outsideBed(let name):
-            "„\(name)“ liegt außerhalb des Druckbetts."
+            String(localized: "„\(name)“ liegt außerhalb des Druckbetts.")
         case .tooTall(let name):
-            "„\(name)“ ist höher als 270 mm."
+            String(localized: "„\(name)“ ist höher als 270 mm.")
         case .mixedMaterials(let materials):
-            "Gemischte Materialien (\(materials.map(\.rawValue).joined(separator: " + "))) werden in Version 1 noch nicht unterstützt. Bitte nur Köpfe mit gleichem Material verwenden."
+            String(localized: "Gemischte Materialien (\(materials.map(\.rawValue).joined(separator: " + "))) werden in Version 1 noch nicht unterstützt. Bitte nur Köpfe mit gleichem Material verwenden.")
         case .paintedModel(let name):
-            "„\(name)“ ist bemalt; die Bemalung wird ignoriert."
+            String(localized: "„\(name)“ ist bemalt; die Bemalung wird ignoriert.")
         }
     }
 }

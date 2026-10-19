@@ -44,7 +44,7 @@ struct SettingsSheet: View {
                                     }
                                 }
                                 Spacer()
-                                Text(head.loaded ? Format.temperature(Double(head.nozzleTemp)) : "leer")
+                                Text(head.loaded ? Format.temperature(Double(head.nozzleTemp)) : String(localized: "leer"))
                                     .foregroundStyle(.secondary)
                             }
                         }

@@ -93,7 +93,9 @@ struct PlateScreen: View {
 
     private var settingsSummary: String {
         let s = model.settings
-        return "Infill \(s.infill) % · Stützen \(s.supports ? "an" : "aus") · Brim \(s.brim ? "an" : "aus")"
+        let supports = s.supports ? String(localized: "an") : String(localized: "aus")
+        let brim = s.brim ? String(localized: "an") : String(localized: "aus")
+        return String(localized: "Infill \(s.infill) % · Stützen \(supports) · Brim \(brim)")
     }
 }
 
@@ -143,11 +145,11 @@ private struct ObjectToolbar: View {
         .padding(.bottom, 6)
     }
 
-    private func tool(_ title: String, _ icon: String, action: @escaping () -> Void) -> some View {
+    private func tool(_ title: LocalizedStringKey, _ icon: String, action: @escaping () -> Void) -> some View {
         Button(action: action) { toolLabel(title, icon) }
     }
 
-    private func toolLabel(_ title: String, _ icon: String) -> some View {
+    private func toolLabel(_ title: LocalizedStringKey, _ icon: String) -> some View {
         VStack(spacing: 4) {
             Image(systemName: icon).font(.title3)
             Text(title).font(.caption2)
