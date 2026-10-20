@@ -13,7 +13,11 @@ struct PlateScreen: View {
                     viewport
                     Divider()
                     ScrollView {
-                        controls.padding()
+                        VStack(spacing: 14) {
+                            controls
+                            SliceButton()
+                        }
+                        .padding()
                     }
                     .frame(width: 360)
                     .background(Color(.systemGroupedBackground))
@@ -27,6 +31,13 @@ struct PlateScreen: View {
                     }
                     .background(Color(.systemGroupedBackground))
                     .accessibilityIdentifier("controls")
+                    // the main action stays visible however long the list gets
+                    .safeAreaInset(edge: .bottom) {
+                        SliceButton()
+                            .padding(.horizontal)
+                            .padding(.vertical, 10)
+                            .background(.bar)
+                    }
                 }
             }
         }
@@ -94,7 +105,6 @@ struct PlateScreen: View {
                 .background(.background, in: RoundedRectangle(cornerRadius: 14))
             }
             .buttonStyle(.plain)
-            SliceButton()
         }
     }
 
