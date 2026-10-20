@@ -97,9 +97,15 @@ struct EngineStatusLine: View {
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         case .failed(let message):
-            Label(message, systemImage: "exclamationmark.triangle")
-                .font(.footnote)
-                .foregroundStyle(.orange)
+            VStack(spacing: 8) {
+                Label(message, systemImage: "exclamationmark.triangle")
+                    .font(.footnote)
+                    .foregroundStyle(.orange)
+                Button("Erneut versuchen", systemImage: "arrow.clockwise") {
+                    model.engine.restart()
+                }
+                .font(.subheadline)
+            }
         case .ready:
             if model.isImporting {
                 ProgressView("Modell wird geladen …")

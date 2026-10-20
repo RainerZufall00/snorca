@@ -340,6 +340,12 @@ private struct SliceButton: View {
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
             }
+            if case .failed = model.engine.state {
+                Button("Erneut versuchen", systemImage: "arrow.clockwise") {
+                    model.engine.restart()
+                }
+                .font(.subheadline)
+            }
             if model.result != nil, !isSlicing {
                 Button("Letzte Vorschau öffnen") { model.showPreview = true }
                     .font(.subheadline)
@@ -357,7 +363,7 @@ private struct SliceButton: View {
         guard !isSlicing, !model.canSlice else { return nil }
         switch model.engine.state {
         case .loading: return "Die Slicing-Engine startet noch …"
-        case .failed: return "Die Slicing-Engine ist nicht verfügbar. Starte die App neu."
+        case .failed: return "Die Slicing-Engine ist nicht verfügbar."
         case .ready: return model.issues.isEmpty ? nil : "Bitte zuerst die Hinweise oben beheben."
         }
     }

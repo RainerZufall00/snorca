@@ -221,16 +221,6 @@
         }
       }
     },
-    "Die Slicing-Engine ist nicht verfügbar. Starte die App neu.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The slicing engine is unavailable. Please restart the app."
-          }
-        }
-      }
-    },
     "Die Slicing-Engine startet noch …": {
       "localizations": {
         "en": {
@@ -1207,6 +1197,56 @@
           "stringUnit": {
             "state": "translated",
             "value": "“%@” is outside the build plate."
+          }
+        }
+      }
+    },
+    "Die Slicing-Engine ist nicht verfügbar.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The slicing engine is unavailable."
+          }
+        }
+      }
+    },
+    "Erneut versuchen": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try again"
+          }
+        }
+      }
+    },
+    "Die Slicing-Engine konnte nicht gestartet werden.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The slicing engine could not be started."
+          }
+        }
+      }
+    },
+    "Die Slicing-Engine konnte nicht gestartet werden: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The slicing engine could not be started: %@"
+          }
+        }
+      }
+    },
+    "Das Engine-Paket fehlt in der App (ios/EngineBundle).": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The engine bundle is missing from the app (ios/EngineBundle)."
           }
         }
       }

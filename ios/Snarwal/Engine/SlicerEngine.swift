@@ -25,28 +25,46 @@ final class SlicerEngine {
     @ObservationIgnored private var readyWaiters: [CheckedContinuation<Void, Error>] = []
 
     @ObservationIgnored private var server: LocalEngineServer?
+    /// Counts (re)starts so a stale timeout can't fail a newer attempt.
+    @ObservationIgnored private var attempt = 0
+    @ObservationIgnored private var proxy: MessageProxy!
 
     init() {
         let config = WKWebViewConfiguration()
         let controller = WKUserContentController()
         config.userContentController = controller
         webView = WKWebView(frame: CGRect(x: 0, y: 0, width: 1, height: 1), configuration: config)
-        controller.add(MessageProxy(self), name: "snarwal")
+        proxy = MessageProxy(self)
+        controller.add(proxy, name: "snarwal")
+        webView.navigationDelegate = proxy
         #if DEBUG
         webView.isInspectable = true
         #endif
+        restart()
+    }
+
+    /// Starts the engine, or starts it again after a failure or after iOS
+    /// ended the web content process (e.g. while the app was in the background).
+    func restart() {
+        attempt += 1
+        let current = attempt
+        state = .loading
+        server?.stop()
+        server = nil
         Task { [weak self] in
             await self?.start()
         }
         Task { [weak self] in
-            try? await Task.sleep(for: .seconds(30))
-            self?.failIfStillLoading()
+            // the first start on an older device or a busy simulator can be slow
+            try? await Task.sleep(for: .seconds(120))
+            guard let self, self.attempt == current else { return }
+            self.failIfStillLoading()
         }
     }
 
     private func start() async {
         guard let root = Bundle.main.url(forResource: "EngineBundle", withExtension: nil) else {
-            fail("Das Engine-Paket fehlt in der App (ios/EngineBundle).")
+            fail(String(localized: "Das Engine-Paket fehlt in der App (ios/EngineBundle)."))
             return
         }
         let server = LocalEngineServer(root: root)
@@ -55,7 +73,7 @@ final class SlicerEngine {
             let port = try await server.start()
             webView.load(URLRequest(url: URL(string: "http://127.0.0.1:\(port)/index.html")!))
         } catch {
-            fail("Die Slicing-Engine konnte nicht gestartet werden: \(error.localizedDescription)")
+            fail(String(localized: "Die Slicing-Engine konnte nicht gestartet werden: \(error.localizedDescription)"))
         }
     }
 
@@ -67,7 +85,15 @@ final class SlicerEngine {
 
     private func failIfStillLoading() {
         guard state == .loading else { return }
-        fail("Die Slicing-Engine konnte nicht gestartet werden.")
+        fail(String(localized: "Die Slicing-Engine konnte nicht gestartet werden."))
+    }
+
+    fileprivate func pageFailed(_ error: Error) {
+        // a restart cancels the previous page load; that is not a failure
+        let nsError = error as NSError
+        if nsError.domain == NSURLErrorDomain && nsError.code == NSURLErrorCancelled { return }
+        guard state == .loading else { return }
+        fail(String(localized: "Die Slicing-Engine konnte nicht gestartet werden: \(error.localizedDescription)"))
     }
 
     fileprivate func receive(_ body: Any) {
@@ -85,7 +111,10 @@ final class SlicerEngine {
     private func waitUntilReady() async throws {
         switch state {
         case .ready: return
-        case .failed(let message): throw EngineError.engine(message)
+        case .failed:
+            // try once more instead of staying broken until the app restarts
+            restart()
+            try await withCheckedThrowingContinuation { readyWaiters.append($0) }
         case .loading:
             try await withCheckedThrowingContinuation { readyWaiters.append($0) }
         }
@@ -169,7 +198,7 @@ enum EngineError: LocalizedError {
 }
 
 /// WKUserContentController retains its handlers; this breaks the cycle.
-private final class MessageProxy: NSObject, WKScriptMessageHandler {
+private final class MessageProxy: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
     weak var engine: SlicerEngine?
 
     init(_ engine: SlicerEngine) {
@@ -180,6 +209,24 @@ private final class MessageProxy: NSObject, WKScriptMessageHandler {
         let body = message.body
         MainActor.assumeIsolated {
             engine?.receive(body)
+        }
+    }
+
+    func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+        MainActor.assumeIsolated {
+            engine?.restart()
+        }
+    }
+
+    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        MainActor.assumeIsolated {
+            engine?.pageFailed(error)
+        }
+    }
+
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        MainActor.assumeIsolated {
+            engine?.pageFailed(error)
         }
     }
 }
