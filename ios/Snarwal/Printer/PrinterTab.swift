@@ -218,14 +218,18 @@ struct PrinterScreen: View {
         return HStack(spacing: 10) {
             if status.state == .paused {
                 ControlButton(title: "Fortsetzen", icon: "play.fill") { Task { await printer.resume() } }
+                    .accessibilityIdentifier("resumeButton")
             } else {
                 ControlButton(title: "Pause", icon: "pause.fill") { Task { await printer.pause() } }
+                    .accessibilityIdentifier("pauseButton")
             }
             ControlButton(title: "Abbrechen", icon: "stop.fill", tint: .red) { confirmCancel = true }
+                .accessibilityIdentifier("cancelPrintButton")
             ControlButton(title: status.lightOn ? "Licht an" : "Licht aus",
                           icon: status.lightOn ? "lightbulb.fill" : "lightbulb") {
                 Task { await printer.setLight(!status.lightOn) }
             }
+            .accessibilityIdentifier("lightButton")
         }
     }
 

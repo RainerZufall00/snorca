@@ -134,6 +134,14 @@ offiziellen U1-Profil von Snapmaker Orca (Stand 2026-01-28):
 6. **M6 – Testdrucke** nach Testplan (G-Code-Vergleich mit Orca → Würfel → 2 Köpfe → 4 Köpfe).
 7. **M7 – App Store**: Englische Übersetzung, Datenschutzangaben, Screenshots, Review.
 
+## Bekannte Grenzen (v1)
+
+- **Sehr feine Strukturen:** Kiri:Moto lässt Bereiche weg, die schmaler als etwa 0,7 mm sind
+  (z. B. Nadelspitzen im KSR-FDM-Test: Druck endet bei 88,8 statt 92 mm). Orca druckt dank Arachne
+  noch etwas feiner. Normale Modelle (3DBenchy, Stanford Bunny, Kalibrierwürfel) sind vollständig.
+- **Ein Material pro Druck** (eine Düsentemperatur), siehe oben.
+- **Keine Baumstützen**, keine bemalten Mehrfarbmodelle.
+
 ## Offen / später
 
 - Kiri-Patch: Temperatur pro Kopf (gemischte Materialien).

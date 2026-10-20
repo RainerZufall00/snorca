@@ -29,7 +29,8 @@ jobs:
           pick() { xcrun simctl list devices available -j | python3 -c "import json,sys; d=json.load(sys.stdin)['devices']; print(next(x['udid'] for k in sorted(d, reverse=True) if 'iOS' in k for x in d[k] if x['name'].startswith('$1')))"; }
           IPHONE=$(pick iPhone); IPAD=$(pick iPad)
           echo "IPHONE=$IPHONE" >> "$GITHUB_ENV"; echo "IPAD=$IPAD" >> "$GITHUB_ENV"
-          # mock U1 for the UI test (slice → send → print)
+          # models the UI tests import, and a mock U1 for slice → send → print
+          python3 ci/make_test_models.py /tmp/snarwal-uitest 3DBenchy.3mf
           python3 ci/mock_moonraker.py --port 7125 --upload-dir "$RUNNER_TEMP/uploads" > "$RUNNER_TEMP/mock.log" 2>&1 &
           for i in $(seq 60); do curl -sf http://127.0.0.1:7125/server/webcams/list >/dev/null && break; sleep 1; done
           xcodebuild \
@@ -125,3 +126,9 @@ jobs:
         run: |
           npm run build
           npm test
+      - name: Slice real models (3DBenchy, Stanford Bunny, Voron cube, …)
+        working-directory: engine
+        run: |
+          python3 ../ci/make_test_models.py "$RUNNER_TEMP/models" 3DBenchy.3mf Stanford_Bunny.3mf \
+            Voron_Design_Cube_v7.3mf OrcaCube_v2.3mf ksr_fdmtest_v4.3mf OrcaToleranceTest.stl
+          node test/real-models.test.mjs "$RUNNER_TEMP/models"

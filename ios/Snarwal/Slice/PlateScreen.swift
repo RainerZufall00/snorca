@@ -105,6 +105,7 @@ struct PlateScreen: View {
                 .background(.background, in: RoundedRectangle(cornerRadius: 14))
             }
             .buttonStyle(.plain)
+            .accessibilityIdentifier("settingsButton")
         }
     }
 
@@ -138,6 +139,7 @@ private struct ObjectToolbar: View {
         HStack {
             tool("Drehen", "arrow.clockwise") { model.rotateSelected() }
                 .disabled(!hasSelection)
+                .accessibilityIdentifier("tool-rotate")
             Menu {
                 ForEach([0.5, 0.8, 1.0, 1.2, 1.5, 2.0], id: \.self) { factor in
                     Button("\(Int(factor * 100)) %") { model.setScaleSelected(factor) }
@@ -146,9 +148,12 @@ private struct ObjectToolbar: View {
                 toolLabel("Skalieren", "arrow.up.left.and.arrow.down.right")
             }
             .disabled(!hasSelection)
+            .accessibilityIdentifier("tool-scale")
             tool("Flachlegen", "square.bottomhalf.filled") { model.layFlatSelected() }
                 .disabled(!hasSelection)
+                .accessibilityIdentifier("tool-layflat")
             tool("Anordnen", "square.grid.2x2") { model.arrange() }
+                .accessibilityIdentifier("tool-arrange")
             Menu {
                 Button("Duplizieren", systemImage: "plus.square.on.square") { model.duplicateSelected() }
                 Button("Entfernen", systemImage: "trash", role: .destructive) { model.removeSelected() }
@@ -156,6 +161,7 @@ private struct ObjectToolbar: View {
                 toolLabel("Objekt", "ellipsis")
             }
             .disabled(!hasSelection)
+            .accessibilityIdentifier("tool-object")
         }
         .foregroundStyle(Color(white: 0.82))
         .padding(.horizontal, 8)
@@ -239,6 +245,7 @@ private struct SelectionPanel: View {
                     Text(verbatim: "\(Self.mm(size.x)) × \(Self.mm(size.y)) × \(Self.mm(size.z)) mm")
                         .font(.footnote.monospacedDigit())
                         .foregroundStyle(.secondary)
+                        .accessibilityIdentifier("selectionSize")
                 }
                 Text("Druckkopf").font(.footnote.weight(.semibold)).foregroundStyle(.secondary)
                 HStack(spacing: 8) {

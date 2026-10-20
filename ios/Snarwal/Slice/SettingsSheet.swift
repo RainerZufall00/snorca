@@ -29,6 +29,7 @@ struct SettingsSheet: View {
                         }
                     }
                     Toggle("Stützen", isOn: $model.settings.supports)
+                        .accessibilityIdentifier("supportsToggle")
                     Toggle("Brim", isOn: $model.settings.brim)
                 }
 

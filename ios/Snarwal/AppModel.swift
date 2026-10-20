@@ -69,6 +69,21 @@ final class AppModel {
         #if DEBUG
         // launch arguments used by CI screenshots
         let arguments = ProcessInfo.processInfo.arguments
+        if arguments.contains("-SnarwalResetPrinter") {
+            printer.forget()
+        }
+        if arguments.contains("-SnarwalResetPlate") {
+            clearPlate()
+        }
+        if let flag = arguments.firstIndex(of: "-SnarwalImport"), flag + 1 < arguments.count {
+            let url = URL(fileURLWithPath: arguments[flag + 1])
+            Task {
+                while engine.state == .loading {
+                    try? await Task.sleep(for: .milliseconds(500))
+                }
+                await importFile(at: url)
+            }
+        }
         if arguments.contains("-SnarwalDemo") {
             loadDemo()
         }
