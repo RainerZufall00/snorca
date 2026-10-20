@@ -20,6 +20,7 @@ jobs:
       - name: SnarwalCore tests (incl. HTTP against a mock U1)
         run: |
           python3 ci/mock_moonraker.py --port 17125 --upload-dir "$RUNNER_TEMP/core-uploads" > "$RUNNER_TEMP/core-mock.log" 2>&1 &
+          for i in $(seq 60); do curl -sf http://127.0.0.1:17125/server/webcams/list >/dev/null && break; sleep 1; done
           SNARWAL_MOCK_PRINTER=127.0.0.1:17125 swift test --package-path Packages/SnarwalCore
       - name: Build and test the app in the iOS simulator
         run: |
@@ -30,6 +31,7 @@ jobs:
           echo "IPHONE=$IPHONE" >> "$GITHUB_ENV"; echo "IPAD=$IPAD" >> "$GITHUB_ENV"
           # mock U1 for the UI test (slice → send → print)
           python3 ci/mock_moonraker.py --port 7125 --upload-dir "$RUNNER_TEMP/uploads" > "$RUNNER_TEMP/mock.log" 2>&1 &
+          for i in $(seq 60); do curl -sf http://127.0.0.1:7125/server/webcams/list >/dev/null && break; sleep 1; done
           xcodebuild \
             -project ios/Snarwal.xcodeproj \
             -scheme Snarwal \
@@ -56,6 +58,7 @@ jobs:
           APP=build/Build/Products/Debug-iphonesimulator/Snarwal.app
           ID=io.github.rainerzufall00.snarwal
           mkdir -p screenshots
+          if [ -z "$IPHONE" ] || [ ! -d "$APP" ]; then echo "no app build, skipping screenshots"; exit 0; fi
           # macOS has no `timeout`; perl's alarm does the job
           limit() { local s=$1; shift; perl -e 'alarm shift; exec @ARGV' "$s" "$@"; }
           prepare() {
@@ -94,6 +97,7 @@ jobs:
         if: always() && github.ref == 'refs/heads/master'
         run: |
           cd screenshots
+          ls *.png >/dev/null 2>&1 || { echo "no screenshots"; exit 0; }
           for f in *.png; do sips -Z 1000 "$f" >/dev/null; done
           git init -q
           git checkout -q -b ci-screenshots
