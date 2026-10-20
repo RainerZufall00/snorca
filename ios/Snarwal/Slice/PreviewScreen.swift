@@ -41,25 +41,29 @@ struct PreviewScreen: View {
                 }
                 stats(result)
                     .frame(maxWidth: 520)
-                VStack(spacing: 10) {
-                    Button {
-                        showSend = true
-                    } label: {
-                        Text("An U1 senden").font(.headline).frame(maxWidth: .infinity, minHeight: 50)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .accessibilityIdentifier("sendButton")
-                    if let url = result.fileURL {
-                        ShareLink(item: url) {
-                            Label("G-Code teilen", systemImage: "square.and.arrow.up")
-                        }
+                if let url = result.fileURL {
+                    ShareLink(item: url) {
+                        Label("G-Code teilen", systemImage: "square.and.arrow.up")
                     }
                 }
-                .frame(maxWidth: 520)
             }
             .padding()
         }
         .background(Color(.systemGroupedBackground))
+        // the next step stays in reach however long the page gets
+        .safeAreaInset(edge: .bottom) {
+            Button {
+                showSend = true
+            } label: {
+                Text("An U1 senden").font(.headline).frame(maxWidth: 520, minHeight: 50)
+            }
+            .buttonStyle(.borderedProminent)
+            .accessibilityIdentifier("sendButton")
+            .padding(.horizontal)
+            .padding(.vertical, 10)
+            .frame(maxWidth: .infinity)
+            .background(.bar)
+        }
         .navigationTitle("Vorschau")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
