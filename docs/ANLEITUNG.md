@@ -23,6 +23,7 @@ Modelle werden (noch) einfarbig gedruckt.
 
 - **Objekt antippen** – in der 3D-Ansicht oder in der Leiste darunter. Darunter erscheint das
   Objekt mit seinen Maßen und vier großen Knöpfen **T1–T4**: antippen = dieser Druckkopf druckt das Objekt.
+  Tippen auf eine freie Stelle der 3D-Ansicht hebt die Auswahl auf.
 - **Objekt mit dem Finger ziehen** verschiebt es auf der Platte (es bleibt immer auf dem Bett).
 - Werkzeuge unter der 3D-Ansicht: **Drehen** (90°), **Skalieren**, **Flachlegen**, **Anordnen**,
   **Objekt** → Duplizieren/Entfernen.

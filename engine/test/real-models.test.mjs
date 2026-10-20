@@ -55,7 +55,7 @@ try {
             const { objects } = await self.snarwal.loadModel({ name, data });
             const decode = b64 => new Float32Array(Uint8Array.from(atob(b64), c => c.charCodeAt(0)).buffer);
             const bed = self.snarwal.device;
-            let maxHeight = 0, triangles = 0;
+            let maxHeight = 0, triangles = 0, placedCount = 0;
             const placed = objects.map(o => {
                 const f = decode(o.vertices);
                 triangles += f.length / 9;
@@ -65,7 +65,8 @@ try {
                 }
                 const dx = bed.bedWidth / 2 - (min[0] + max[0]) / 2, dy = bed.bedDepth / 2 - (min[1] + max[1]) / 2, dz = -min[2];
                 for (let i = 0; i < f.length; i += 3) { f[i] += dx; f[i + 1] += dy; f[i + 2] += dz; }
-                maxHeight = Math.max(maxHeight, max[2] - min[2]);
+                // only the first object is sliced (all are centred on the bed)
+                if (!placedCount++) maxHeight = max[2] - min[2];
                 const bytes = new Uint8Array(f.buffer);
                 let bin = '';
                 for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));

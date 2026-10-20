@@ -210,7 +210,8 @@ private struct ObjectStrip: View {
         let head = model.heads.first { $0.tool == object.tool } ?? HeadFilament(tool: object.tool)
         let selected = object.id == model.selectedID
         return Button {
-            model.selectedID = selected ? nil : object.id
+            // always select; deselecting happens by tapping empty space in the 3D view
+            model.selectedID = object.id
         } label: {
             HStack(spacing: 8) {
                 FilamentDot(color: head.color, size: 24)
