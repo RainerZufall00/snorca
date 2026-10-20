@@ -35,7 +35,9 @@ final class AppModel {
         didSet { saveSettings() }
     }
     /// Filament per head chosen in the app; replaced by the printer's RFID data when connected.
-    var manualHeads = HeadFilament.defaults()
+    var manualHeads = HeadFilament.defaults() {
+        didSet { saveManualHeads() }
+    }
     var sliceState: SliceState = .idle
     var showPreview = false
     /// Increases with every finished slice (drives the success haptic).
@@ -60,6 +62,11 @@ final class AppModel {
         if let data = UserDefaults.standard.data(forKey: "sliceSettings"),
            let saved = try? JSONDecoder().decode(SliceSettings.self, from: data) {
             settings = saved
+        }
+        if let data = UserDefaults.standard.data(forKey: "manualHeads"),
+           let saved = try? JSONDecoder().decode([HeadFilament].self, from: data),
+           saved.count == PrinterSpec.toolCount {
+            manualHeads = saved
         }
         if let restored = store.load() {
             plate = restored.plate
@@ -122,6 +129,12 @@ final class AppModel {
         selectedID = plate.objects.first?.id
     }
     #endif
+
+    private func saveManualHeads() {
+        if let data = try? JSONEncoder().encode(manualHeads) {
+            UserDefaults.standard.set(data, forKey: "manualHeads")
+        }
+    }
 
     private func saveSettings() {
         if let data = try? JSONEncoder().encode(settings) {

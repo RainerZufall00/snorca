@@ -48,7 +48,7 @@ public enum Material: String, CaseIterable, Codable, Sendable, Identifiable {
 }
 
 /// What is loaded in one toolhead.
-public struct HeadFilament: Equatable, Sendable, Identifiable {
+public struct HeadFilament: Equatable, Sendable, Identifiable, Codable {
     public var tool: Int
     public var material: Material
     /// `#RRGGBB`

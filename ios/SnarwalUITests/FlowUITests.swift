@@ -237,6 +237,11 @@ final class FlowUITests: XCTestCase {
         XCTAssertTrue(chip("Halterung", in: app).waitForExistence(timeout: 60), "plate restored")
         XCTAssertEqual(app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Halterung'")).count, 2)
         XCTAssertTrue(chip("Deckel", in: app).exists)
+        // filament chosen per head (demo: PETG on T4) is kept as well
+        chip("Halterung", in: app).tap()
+        let t4 = app.buttons["head-T4"]
+        reveal(t4, in: app)
+        XCTAssertTrue(t4.label.contains("PETG"), t4.label)
         snapshot("Nach Neustart", app)
     }
 }

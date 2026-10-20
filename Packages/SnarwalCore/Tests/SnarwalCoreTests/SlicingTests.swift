@@ -65,6 +65,12 @@ final class SlicingTests: XCTestCase {
         XCTAssertEqual(SliceSettings().kiriProcess(firstHead: HeadFilament(tool: 0))["sliceSupportType"], .string("disabled"))
     }
 
+    func testHeadFilamentRoundTrip() throws {
+        let heads = [HeadFilament(tool: 3, material: .petg, colorHex: "#2F6FD6", nozzleTemp: 250)]
+        let decoded = try JSONDecoder().decode([HeadFilament].self, from: JSONEncoder().encode(heads))
+        XCTAssertEqual(decoded, heads)
+    }
+
     func testMaterialFromPrinterType() {
         XCTAssertEqual(Material(printerType: "PLA"), .pla)
         XCTAssertEqual(Material(printerType: "petg hf"), .petg)
