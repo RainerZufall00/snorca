@@ -153,6 +153,10 @@ struct PrinterScreen: View {
             Color.snarwalViewport
             if let source = model.printer.camera {
                 CameraView(source: source, websocketURL: model.printer.baseURL.flatMap { try? MoonrakerClient(host: $0.absoluteString).websocketURL })
+            } else if model.printer.isDemo {
+                Label("Kamerabild gibt es nur mit echtem Drucker", systemImage: "video.slash")
+                    .font(.footnote)
+                    .foregroundStyle(.white.opacity(0.7))
             } else {
                 ProgressView().tint(.white)
             }

@@ -1250,6 +1250,16 @@
           }
         }
       }
+    },
+    "Kamerabild gibt es nur mit echtem Drucker": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The camera only works with a real printer"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

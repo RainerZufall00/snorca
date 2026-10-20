@@ -23,7 +23,7 @@ final class PrinterConnection {
     @ObservationIgnored private var client: MoonrakerClient?
     @ObservationIgnored private var pollTask: Task<Void, Never>?
     @ObservationIgnored private var estimateFile = ""
-    @ObservationIgnored private var isDemo = false
+    private(set) var isDemo = false
 
     init() {
         host = UserDefaults.standard.string(forKey: "printerHost") ?? ""
@@ -38,6 +38,7 @@ final class PrinterConnection {
         let trimmed = newHost.trimmingCharacters(in: .whitespacesAndNewlines)
         host = trimmed
         UserDefaults.standard.set(trimmed, forKey: "printerHost")
+        isDemo = false
         status = nil
         camera = nil
         estimateFile = ""
@@ -58,6 +59,7 @@ final class PrinterConnection {
         host = ""
         UserDefaults.standard.removeObject(forKey: "printerHost")
         link = .notConfigured
+        isDemo = false
         status = nil
         camera = nil
     }
